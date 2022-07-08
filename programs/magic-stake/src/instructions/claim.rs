@@ -83,6 +83,7 @@ pub fn handler(ctx: Context<Claim>) -> Result<()> {
     let farm = &mut ctx.accounts.farm;
     let farmer = &mut ctx.accounts.farmer;
     farm.update_rewards(now_ts()?, Some(farmer), true)?;
+    farm.update_lp_points(now_ts()?, Some(farmer), true)?;
     let to_claim_a = farmer
                     .reward_a
                     .claim_reward(ctx.accounts.reward_a_pot.amount)?;

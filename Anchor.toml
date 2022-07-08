@@ -1,6 +1,7 @@
 [features]
 seeds = false
 [programs.devnet]
+gem_bank = "E5YtM9wbAq1KXiNXD9KduhpJ5enqpJUiiCF7kqLfPqyD"
 magic_stake = "DSLARnuDwzcBivkKNG8svEZhEcrBvvhyCzB19nGfB9uz"
 
 [registry]

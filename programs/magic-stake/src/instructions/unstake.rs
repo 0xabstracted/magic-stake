@@ -107,6 +107,7 @@ pub fn handler(ctx: Context<Unstake>, skip_rewards: bool) -> Result<()> {
     if !skip_rewards {
         farm.update_rewards(now_ts, Some(farmer), false)?;
     }
+    farm.update_lp_points(now_ts, Some(farmer), false)?;
     farm.end_staking(now_ts, farmer)?;
     if farmer.state == FarmerState::Unstaked {
         gem_bank::cpi::set_vault_lock(

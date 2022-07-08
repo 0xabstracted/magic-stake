@@ -607,16 +607,15 @@ checksum = "835a3dc7d1ec9e75e2b5fb4ba75396837112d2060b03f7d43bc1897c7f7211da"
 [[package]]
 name = "gem_bank"
 version = "0.1.0"
-source = "git+https://github.com/gemworks/gem-farm#3a1f74f82ba9328d1670a157d201e246f4a1ab2a"
 dependencies = [
  "anchor-lang",
  "anchor-spl",
  "arrayref",
  "bitflags",
  "bytemuck",
- "gem_common 0.1.0 (git+https://github.com/gemworks/gem-farm)",
+ "gem_common",
  "metaplex-token-metadata",
- "proc_macros 0.1.0 (git+https://github.com/gemworks/gem-farm)",
+ "proc_macros",
  "static_assertions",
  "thiserror",
 ]
@@ -624,18 +623,6 @@ dependencies = [
 [[package]]
 name = "gem_common"
 version = "0.1.0"
-dependencies = [
- "anchor-lang",
- "anchor-spl",
- "spl-math",
- "static_assertions",
- "thiserror",
-]
-
-[[package]]
-name = "gem_common"
-version = "0.1.0"
-source = "git+https://github.com/gemworks/gem-farm#3a1f74f82ba9328d1670a157d201e246f4a1ab2a"
 dependencies = [
  "anchor-lang",
  "anchor-spl",
@@ -861,8 +848,8 @@ dependencies = [
  "bitflags",
  "bytemuck",
  "gem_bank",
- "gem_common 0.1.0",
- "proc_macros 0.1.0",
+ "gem_common",
+ "proc_macros",
  "static_assertions",
  "thiserror",
 ]
@@ -1040,17 +1027,6 @@ dependencies = [
 [[package]]
 name = "proc_macros"
 version = "0.1.0"
-dependencies = [
- "proc-macro2",
- "quote",
- "static_assertions",
- "syn",
-]
-
-[[package]]
-name = "proc_macros"
-version = "0.1.0"
-source = "git+https://github.com/gemworks/gem-farm#3a1f74f82ba9328d1670a157d201e246f4a1ab2a"
 dependencies = [
  "proc-macro2",
  "quote",

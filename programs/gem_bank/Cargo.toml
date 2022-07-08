@@ -1,22 +1,19 @@
 [package]
-name = "magic-stake"
+name = "gem_bank"
 version = "0.1.0"
-description = "Created with Anchor"
+description = "safely store and manage your gem collection"
 edition = "2021"
 
 [lib]
 crate-type = ["cdylib", "lib"]
-name = "magic_stake"
+name = "gem_bank"
+doctest = false
 
 [features]
 no-entrypoint = []
 no-idl = []
-no-log-ix-name = []
 cpi = ["no-entrypoint"]
 default = []
-
-[profile.release]
-overflow-checks = true
 
 [dependencies]
 anchor-lang = { version="0.24.2", features = ["init-if-needed"] }
@@ -25,7 +22,7 @@ bitflags = "1.3.2"
 bytemuck = "1.7.2"
 static_assertions = "1.1.0"
 thiserror = "1.0.30"
-gem_bank = {path = "../gem_bank", features = ["cpi"]}
+metaplex-token-metadata = { version = "0.0.1", features = ["no-entrypoint"] }
 gem_common = {path='../../lib/gem_common'}
 proc_macros = {path='../../lib/proc_macros'}
 arrayref = "0.3.6"
