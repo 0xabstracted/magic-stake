@@ -1,0 +1,40 @@
+use crate::state::{AuthorizationProof, Farm};
+use anchor_lang::prelude::*;
+use gem_common::close_account;
+use gem_common::TrySub;
+
+#[derive(Accounts)]
+#[instruction(bump: u8)]
+pub struct DeauthorizeFunder<'info> {
+    #[account(mut, has_one = farm_manager)]
+    pub farm: Box<Account<'info, Farm>>,
+    #[account(mut)]
+    pub farm_manager: Signer<'info>,
+    ///CHECK:
+    pub funder_to_deauthorize: AccountInfo<'info>,
+    #[account(mut,
+            has_one = farm,
+            constraint = authorization_proof.authorized_funder == funder_to_deauthorize.key(),
+            seeds = [
+                b"authorization".as_ref(),
+                farm.key().as_ref(),
+                funder_to_deauthorize.key.as_ref(),
+            ],
+            bump = bump)]
+    authorization_proof: Box<Account<'info, AuthorizationProof>>,
+    system_program: Program<'info, System>,
+}
+
+pub fn handler(ctx: Context<DeauthorizeFunder>) -> Result<()> {
+    close_account(
+        &mut ctx.accounts.authorization_proof.to_account_info(),
+        &mut ctx.accounts.farm_manager.to_account_info(),
+    )?;
+    let farm = &mut ctx.accounts.farm;
+    farm.authorized_funder_count.try_sub_assign(1)?;
+    msg!(
+        "funder DEauthorized: {}",
+        ctx.accounts.funder_to_deauthorize.key()
+    );
+    Ok(())
+}
