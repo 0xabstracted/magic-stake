@@ -7,7 +7,7 @@ use gem_bank::instructions::record_rarity_points::RarityConfig;
 use instructions::*;
 use state::*;
 
-declare_id!("DSLARnuDwzcBivkKNG8svEZhEcrBvvhyCzB19nGfB9uz");
+declare_id!("Aongbkk7nugP97rw6ipEe8YW7aMs2kXZP9KDW2Gd1SYo");
 
 #[program]
 pub mod magic_stake {

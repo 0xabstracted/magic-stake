@@ -1,15 +1,15 @@
 [features]
 seeds = false
 [programs.devnet]
-gem_bank = "E5YtM9wbAq1KXiNXD9KduhpJ5enqpJUiiCF7kqLfPqyD"
-magic_stake = "DSLARnuDwzcBivkKNG8svEZhEcrBvvhyCzB19nGfB9uz"
+gem_bank = "4csjvBqpToEGdznycmEM9M6a6EhvToUy2mD6teMyoCfB"
+magic_stake = "Aongbkk7nugP97rw6ipEe8YW7aMs2kXZP9KDW2Gd1SYo"
 
 [registry]
 url = "https://anchor.projectserum.com"
 
 [provider]
 cluster = "https://metaplex.devnet.rpcpool.com/"
-wallet = "/home/abstracted/solana-wallet/dev1.json"
+wallet = "/Users/bhargavveepuri/dev-solana-wallet/dev1.json"
 
 [scripts]
 test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"
