@@ -37,11 +37,11 @@ pub struct FlashDeposit<'info> {
     pub vault: Box<Account<'info, Vault>>,
     ///CHECK:
     pub vault_authority: AccountInfo<'info>,
-    #[account(mut)]
     ///CHECK:
+    #[account(mut)]
     pub gem_box: AccountInfo<'info>,
-    #[account(mut)]
     ///CHECK:
+    #[account(mut)]
     pub gem_deposit_receipt: AccountInfo<'info>,
     #[account(mut)]
     pub gem_source: Box<Account<'info, TokenAccount>>,
@@ -152,7 +152,7 @@ pub fn handler<'a, 'b, 'c, 'info>(
             farmer,
         )?;
         // ctx.accounts.transfer_fee(FD_FEE_LAMPORTS)?;
-    }
-    // msg!("{} extra gems staked for {}", amount, famer.key());
+    } 
+    msg!("{} extra gems staked for {}", amount, farmer.key());
     Ok(())
 }

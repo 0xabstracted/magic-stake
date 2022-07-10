@@ -1,7 +1,10 @@
+use crate::state::LPRateConfig;
 use crate::state::farmer::FarmerLPRateReward;
 use crate::state::{loyalty_rewards::lp_rate_schedule::*, FarmerLPPoints, TimeTracker};
 use anchor_lang::prelude::*;
 use gem_common::{TryAdd, TrySub};
+
+use super::lp_rate_config;
 
 #[proc_macros::assert_size(128)]
 #[repr(C)]
@@ -14,6 +17,26 @@ pub struct LPRateReward {
 }
 
 impl LPRateReward {
+    pub fn start_lp(
+        &mut self,
+        now_ts: u64,
+        times: &mut TimeTracker,
+        lp_rate_config: LPRateConfig,
+    ) -> Result<()> {
+        let LPRateConfig {
+            lp_schedule,
+            lp_duration_sec,
+        } = lp_rate_config;
+        lp_schedule.verify_schedule_invariants();
+
+        times.duration_sec = lp_duration_sec;
+        times.reward_end_ts = now_ts.try_add(lp_duration_sec)?;
+
+        self.lp_schedule = lp_schedule;
+        msg!("recorded new lp of for {} sec, schedule: {:?}", lp_duration_sec, lp_schedule);
+        Ok(())
+    }
+
     pub fn cancel_lp_points(&mut self, now_ts: u64, times: &mut TimeTracker) -> Result<()> {
         times.end_reward(now_ts)
     }

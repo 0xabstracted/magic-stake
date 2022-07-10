@@ -42,7 +42,7 @@ pub struct InitFarmer<'info> {
 impl<'info> InitFarmer<'info> {
     fn init_vault_ctx(&self) -> CpiContext<'_, '_, '_, 'info, InitVault<'info>> {
         CpiContext::new(
-            self.gem_bank.to_account_info(),
+            self.gem_bank.to_account_info(), 
             InitVault {
                 bank: self.bank.to_account_info(),
                 vault: self.vault.clone(),

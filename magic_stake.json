@@ -847,6 +847,14 @@
               "defined": "ProbableRateConfig"
             }
           }
+        },
+        {
+          "name": "lpRateConfig",
+          "type": {
+            "option": {
+              "defined": "LPRateConfig"
+            }
+          }
         }
       ]
     },
@@ -1699,6 +1707,24 @@
           },
           {
             "name": "requiredTenure",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "LPRateConfig",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "lpSchedule",
+            "type": {
+              "defined": "LPRateSchedule"
+            }
+          },
+          {
+            "name": "lpDurationSec",
             "type": "u64"
           }
         ]

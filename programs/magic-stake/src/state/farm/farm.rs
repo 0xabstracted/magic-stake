@@ -154,6 +154,13 @@ impl Farm {
         //     reenroll,
         // )
     }
+    
+    pub fn start_lp_by_type(&mut self, now_ts: u64, lp_type: &str, lp_rate_config: Option<LPRateConfig>,) -> Result<()> {
+        self.lp_points.start_lp_by_type(
+            now_ts,
+            lp_rate_config,
+        )
+    }
     pub fn cancel_lp_points_by_type(&self, now_ts: u64, lp_type: &str) -> Result<()> {
         let mut farm_lp_points = match lp_type {
             "RESPECT" => self.lp_points,

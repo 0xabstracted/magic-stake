@@ -156,12 +156,14 @@ pub mod magic_stake {
         //  variable_rate_config: Option<VariableRateConfig>,
         fixed_rate_config: Option<FixedRateConfig>,
         probable_rate_config: Option<ProbableRateConfig>,
+        lp_rate_config: Option<LPRateConfig>,
     ) -> Result<()> {
         msg!("fund reward");
         instructions::fund_reward::handler(
             ctx,
             /*variable_rate_config,*/ fixed_rate_config,
             probable_rate_config,
+            lp_rate_config,
         )
     }
 

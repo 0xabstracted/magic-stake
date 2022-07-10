@@ -40,7 +40,7 @@ impl FixedRateReward {
 
         funds.total_funded.try_add_assign(amount)?;
         self.schedule = schedule;
-        // msg!("recorded new funding of {}", amount);
+        msg!("recorded new funding of {} for {} sec, schedule: {:?}", amount, duration_sec, schedule);
         Ok(())
     }
 
@@ -53,7 +53,7 @@ impl FixedRateReward {
         let refund_amount = funds.pending_amount()?.try_sub(self.reserved_amount)?;
         funds.total_refunded.try_add_assign(refund_amount)?;
         times.end_reward(now_ts)?;
-        // msg!("prepared a total refund amount of {}", refund_amount);
+        msg!("prepared a total refund amount of {} now_ts{}", refund_amount, now_ts);
         Ok(refund_amount)
     }
 
@@ -92,6 +92,7 @@ impl FixedRateReward {
                 )?;
             }
         }
+        msg!("newly_accrued_reward {} now_ts{} funds{:?} times{:?} farmer_rarity_points_staked{} farmer_reward{:?}", newly_accrued_reward, now_ts, funds, times, farmer_rarity_points_staked, farmer_reward);
         Ok(())
     }
 

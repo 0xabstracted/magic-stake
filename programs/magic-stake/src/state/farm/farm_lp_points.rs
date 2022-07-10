@@ -2,8 +2,10 @@ use super::lp_type::*;
 use super::time_tracker::*;
 use crate::state::farmer::FarmerLPPoints;
 use crate::state::loyalty_rewards::lp_rate_reward::*;
+use crate::state::lp_rate_config;
 use anchor_lang::prelude::*;
 use gem_common::errors::ErrorCode;
+use lp_rate_config::LPRateConfig;
 
 #[proc_macros::assert_size(192)]
 #[repr(C)]
@@ -24,7 +26,18 @@ impl FarmLPPoints {
     pub fn is_locked(self, now_ts: u64) -> bool {
         now_ts < self.times.lock_end_ts
     }
-
+    pub fn start_lp_by_type(&mut self, now_ts: u64, lp_rate_config: Option<LPRateConfig>) -> Result<()> {
+        if self.is_locked(now_ts) {
+            return Err(error!(ErrorCode::RewardLocked));
+        }
+        match self.lp_type {
+        LPType::RESPECT => self.lp_rate.start_lp(
+            now_ts,
+            &mut self.times,
+            lp_rate_config.unwrap(),
+        ),
+    }
+    }
     pub fn cancel_lp_points_by_type(&mut self, now_ts: u64) -> Result<()> {
         if self.is_locked(now_ts) {
             return Err(error!(ErrorCode::LPLocked));
