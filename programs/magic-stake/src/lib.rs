@@ -7,7 +7,7 @@ use gem_bank::instructions::record_rarity_points::RarityConfig;
 use instructions::*;
 use state::*;
 
-declare_id!("Aongbkk7nugP97rw6ipEe8YW7aMs2kXZP9KDW2Gd1SYo");
+declare_id!("29hgDheXjMr3bxWC1Qsa6rY6qZy1VLajB8w21ARY56Vz");
 
 #[program]
 pub mod magic_stake {
@@ -75,9 +75,9 @@ pub mod magic_stake {
 
     // --------------------------------------- farmer ops
 
-    pub fn init_farmer(ctx: Context<InitFarmer>, vault_name: String) -> Result<()> {
+    pub fn init_farmer(ctx: Context<InitFarmer>) -> Result<()> {
         msg!("init farmer");
-        instructions::init_farmer::handler(ctx, vault_name)
+        instructions::init_farmer::handler(ctx)
     }
 
     pub fn stake(ctx: Context<Stake>, _bump_auth: u8, _bump_farmer: u8) -> Result<()> {

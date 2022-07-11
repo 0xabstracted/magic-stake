@@ -66,7 +66,7 @@ impl<'info> InitFarmer<'info> {
     // }
 }
 
-pub fn handler(ctx: Context<InitFarmer>, vault_name: String) -> Result<()> {
+pub fn handler(ctx: Context<InitFarmer>) -> Result<()> {
     let farmer = &mut ctx.accounts.farmer;
     farmer.farm = ctx.accounts.farm.key();
     farmer.identity = ctx.accounts.identity.key();
@@ -79,6 +79,7 @@ pub fn handler(ctx: Context<InitFarmer>, vault_name: String) -> Result<()> {
     farm.farmer_count.try_add_assign(1)?;
 
     let vault_owner = ctx.accounts.identity.key();
+    let vault_name = String::from("farm_vault");
     gem_bank::cpi::init_vault(ctx.accounts.init_vault_ctx(), vault_owner, vault_name)?;
     // ctx.accounts.transfer_fee()?;
     msg!("new farm initialized");

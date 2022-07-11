@@ -340,12 +340,7 @@
           "isSigner": false
         }
       ],
-      "args": [
-        {
-          "name": "vaultName",
-          "type": "string"
-        }
-      ]
+      "args": []
     },
     {
       "name": "stake",
@@ -1992,6 +1987,6 @@
     }
   ],
   "metadata": {
-    "address": "Aongbkk7nugP97rw6ipEe8YW7aMs2kXZP9KDW2Gd1SYo"
+    "address": "29hgDheXjMr3bxWC1Qsa6rY6qZy1VLajB8w21ARY56Vz"
   }
 }
