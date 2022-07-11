@@ -155,7 +155,7 @@ impl Farm {
         // )
     }
     
-    pub fn start_lp_by_type(&mut self, now_ts: u64, lp_type: &str, lp_rate_config: Option<LPRateConfig>,) -> Result<()> {
+    pub fn start_lp_by_type(&mut self, now_ts: u64, lp_rate_config: Option<LPRateConfig>,) -> Result<()> {
         self.lp_points.start_lp_by_type(
             now_ts,
             lp_rate_config,

@@ -60,7 +60,7 @@ pub fn handler(
     let now_ts = now_ts()?;
     farm.update_rewards(now_ts, None, true)?;
     farm.update_lp_points(now_ts, None, true)?;
-    farm.start_lp_by_type(now_ts,  "RESPECT", lp_rate_config)?;
+    farm.start_lp_by_type(now_ts, lp_rate_config)?;
     farm.fund_reward_by_mint(
         now_ts, 
         ctx.accounts.reward_mint.key(), 

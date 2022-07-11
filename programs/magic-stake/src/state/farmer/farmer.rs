@@ -5,7 +5,7 @@ use anchor_lang::prelude::*;
 use gem_common::errors::ErrorCode;
 use gem_common::TryAdd;
 
-#[proc_macros::assert_size(712)]
+//#[proc_macros::assert_size(712)]
 #[repr(C)]
 #[account]
 #[derive(Debug)]
