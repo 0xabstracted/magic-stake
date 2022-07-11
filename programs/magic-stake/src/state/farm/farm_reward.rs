@@ -20,7 +20,7 @@ pub struct FarmReward {
     /// Type of reward configured for the pot
     pub reward_type: RewardType, //4
     /// Only one of these three reward types is configured per reward
-    pub fixed_rate: FixedRateReward, //128
+    pub fixed_rate_reward: FixedRateReward, //128
     //    pub variable_rate: VariableRateReward, //72
     pub probable_rate: ProbableRateReward, // 160
     pub funds: FundsTracker,               //24
@@ -54,7 +54,7 @@ impl FarmReward {
         }
 
         match self.reward_type {
-            RewardType::Fixed => self.fixed_rate.fund_reward(
+            RewardType::Fixed => self.fixed_rate_reward.fund_reward(
                 now_ts,
                 &mut self.times,
                 &mut self.funds,
@@ -81,7 +81,7 @@ impl FarmReward {
         }
         match self.reward_type {
             RewardType::Fixed => {
-                self.fixed_rate
+                self.fixed_rate_reward
                     .cancel_reward(now_ts, &mut self.times, &mut self.funds)
             }
             // RewardType::Variable => {
@@ -109,7 +109,7 @@ impl FarmReward {
                 if farmer_reward.is_none() {
                     return Ok(());
                 }
-                self.fixed_rate.update_accrued_reward(
+                self.fixed_rate_reward.update_accrued_reward(
                     now_ts,
                     &mut self.times,
                     &mut self.funds,

@@ -4,7 +4,6 @@ use crate::state::{loyalty_rewards::lp_rate_schedule::*, FarmerLPPoints, TimeTra
 use anchor_lang::prelude::*;
 use gem_common::{TryAdd, TrySub};
 
-use super::lp_rate_config;
 
 #[proc_macros::assert_size(128)]
 #[repr(C)]

@@ -214,7 +214,7 @@ impl Farm {
         self.assert_valid_max_counts()?;
 
         if self.reward_a.reward_type == RewardType::Fixed {
-            self.reward_a.fixed_rate.enroll_farmer(
+            self.reward_a.fixed_rate_reward.enroll_farmer(
                 now_ts,
                 &mut self.reward_a.times,
                 &mut self.reward_a.funds,
@@ -244,7 +244,7 @@ impl Farm {
             )?;
         }
         // if self.reward_b.reward_type == RewardType::Fixed {
-        //     self.reward_b.fixed_rate.enroll_farmer(
+        //     self.reward_b.fixed_rate_reward.enroll_farmer(
         //         now_ts,
         //         &mut self.reward_b.times,
         //         &mut self.reward_b.funds,
@@ -263,7 +263,7 @@ impl Farm {
             FarmerState::Staked => {
                 if self.reward_a.reward_type == RewardType::Fixed {
                     self.reward_a
-                        .fixed_rate
+                        .fixed_rate_reward
                         .graduate_farmer(farmer.rarity_points_staked, &mut farmer.reward_a)?;
                 }
                 if self.reward_a.reward_type == RewardType::Probable {
@@ -279,7 +279,7 @@ impl Farm {
                 }
                 // if self.reward_b.reward_type == RewardType::Fixed {
                 //     self.reward_b
-                //         .fixed_rate
+                //         .fixed_rate_reward
                 //         .graduate_farmer(farmer.rarity_points_staked, &mut farmer.reward_b)?;
                 // }
 
@@ -325,11 +325,11 @@ impl Farm {
             // graduate farmer with previous rarity points count
             let original_begin_staking_ts = self
                 .reward_a
-                .fixed_rate
+                .fixed_rate_reward
                 .graduate_farmer(previous_rarity_points, &mut farmer.reward_a)?;
 
             // re-enroll with NEW rarity points count
-            self.reward_a.fixed_rate.enroll_farmer(
+            self.reward_a.fixed_rate_reward.enroll_farmer(
                 now_ts,
                 &mut self.reward_a.times,
                 &mut self.reward_a.funds,
@@ -375,10 +375,10 @@ impl Farm {
         // if self.reward_b.reward_type == RewardType::Fixed {
         //     let original_begin_staking_ts = self
         //         .reward_b
-        //         .fixed_rate
+        //         .fixed_rate_reward
         //         .graduate_farmer(previous_rarity_points, &mut farmer.reward_b)?;
 
-        //     self.reward_b.fixed_rate.enroll_farmer(
+        //     self.reward_b.fixed_rate_reward.enroll_farmer(
         //         now_ts,
         //         &mut self.reward_b.times,
         //         &mut self.reward_b.funds,

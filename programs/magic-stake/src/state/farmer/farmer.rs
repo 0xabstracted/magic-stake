@@ -35,7 +35,7 @@ impl Farmer {
         &mut self,
         min_staking_period_sec: u64,
         now_ts: u64,
-        gems_in_vault: u64,
+        gems_in_vault: u64, 
         rarity_points_in_vault: u64,
     ) -> Result<(u64, u64)> {
         self.state = FarmerState::Staked;
@@ -65,11 +65,11 @@ impl Farmer {
         self.rarity_points_staked = 0;
         self.cooldown_end_ts = now_ts.try_add(cooldown_period_sec)?;
 
-        // msg!(
-        //    "{} gems are cooling down {}",
-        //      gems_unstaked,
-        //      self.identity,
-        // );
+        msg!(
+           "{} gems are cooling down {}",
+             gems_unstaked,
+             self.identity,
+        );
         Ok((gems_unstaked, rarity_points_unstaked))
     }
 

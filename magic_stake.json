@@ -1289,7 +1289,7 @@
             }
           },
           {
-            "name": "fixedRate",
+            "name": "fixedRateReward",
             "type": {
               "defined": "FixedRateReward"
             }

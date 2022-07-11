@@ -1,4 +1,4 @@
-use crate::state::{AuthorizationProof, Farm, FixedRateConfig, ProbableRateConfig, LPRateConfig, LPType};
+use crate::state::{AuthorizationProof, Farm, FixedRateConfig, ProbableRateConfig, LPRateConfig};
 use anchor_lang::prelude::*;
 use anchor_spl::token::{self, Mint, Token, TokenAccount, Transfer};
 use gem_common::now_ts;

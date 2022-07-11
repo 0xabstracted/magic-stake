@@ -130,14 +130,14 @@ pub fn handler(
     farm.reward_a.reward_mint = ctx.accounts.reward_a_mint.key();
     farm.reward_a.reward_pot = ctx.accounts.reward_a_pot.key();
     farm.reward_a.reward_type = reward_type_a;
-    farm.reward_a.fixed_rate.schedule = FixedRateSchedule::default();
+    farm.reward_a.fixed_rate_reward.schedule = FixedRateSchedule::default();
     farm.lp_points.lp_type = lp_type;
     farm.lp_points.lp_rate.lp_schedule = LPRateSchedule::default();
 
     // farm.reward_b.reward_mint = ctx.accounts.reward_b_mint.key();
     // farm.reward_b.reward_pot = ctx.accounts.reward_b_pot.key();
     // farm.reward_b.reward_type = reward_type_b;
-    // farm.reward_b.fixed_rate.schedule = FixedRateSchedule::default();
+    // farm.reward_b.fixed_rate_reward.schedule = FixedRateSchedule::default();
 
     if let Some(max_counts) = max_counts {
         farm.max_counts = max_counts;
