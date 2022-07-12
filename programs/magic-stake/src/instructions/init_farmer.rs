@@ -4,14 +4,14 @@ use crate::state::Farmer;
 use crate::state::FixedRateSchedule;
 use crate::state::LPRateSchedule;
 use anchor_lang::prelude::*;
-use anchor_lang::solana_program::{program::invoke, system_instruction};
+// use anchor_lang::solana_program::{program::invoke, system_instruction};
 use gem_bank::{self, cpi::accounts::InitVault, program::GemBank, state::Bank};
 use gem_common::TryAdd;
 use std::str::FromStr;
 
 
 
-const FEE_LAMPORTS: u64 = 10_000_000; // 0.01 SOL per farmer
+// const FEE_LAMPORTS: u64 = 10_000_000; // 0.01 SOL per farmer
 
 #[derive(Accounts)]
 pub struct InitFarmer<'info> {
@@ -63,7 +63,7 @@ impl<'info> InitFarmer<'info> {
             },
         )
     }
-
+    /* 
     fn transfer_fee(&self) -> Result<()> {
         invoke(
             &system_instruction::transfer(self.payer.key, self.fee_acc.key, FEE_LAMPORTS),
@@ -75,6 +75,7 @@ impl<'info> InitFarmer<'info> {
         )
         .map_err(Into::into)
     }
+    */
 }
 
 pub fn handler(ctx: Context<InitFarmer>) -> Result<()> {

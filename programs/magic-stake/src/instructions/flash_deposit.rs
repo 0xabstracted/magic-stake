@@ -1,7 +1,7 @@
 use crate::state::Farm;
 use crate::state::Farmer;
 use anchor_lang::prelude::*;
-use anchor_lang::solana_program::{system_instruction, program::invoke};
+//use anchor_lang::solana_program::{system_instruction, program::invoke};
 use anchor_spl::token::{Mint, Token, TokenAccount};
 use gem_bank::instructions::calc_rarity_points;
 use gem_bank::{
@@ -13,8 +13,8 @@ use gem_bank::{
 use gem_common::now_ts;
 use std::str::FromStr;
 use crate::instructions::FEE_WALLET;
-const FEE_LAMPORTS: u64 = 2_000_000; // 0.002 SOL per stake/unstake
-const FD_FEE_LAMPORTS: u64 = 1_000_000; // half of that for FDs
+// const FEE_LAMPORTS: u64 = 2_000_000; // 0.002 SOL per stake/unstake
+// const FD_FEE_LAMPORTS: u64 = 1_000_000; // half of that for FDs
 
 #[derive(Accounts)]
 #[instruction(bump_farmer: u8)]
@@ -102,7 +102,7 @@ impl<'info> FlashDeposit<'info> {
             },
         )
     }
-
+    /* 
     fn transfer_fee(&self, fee: u64) -> Result<()> {
         invoke(
             &system_instruction::transfer(self.identity.key, self.fee_acc.key, fee),
@@ -114,6 +114,7 @@ impl<'info> FlashDeposit<'info> {
         )
         .map_err(Into::into)
     }
+    */
 }
 
 pub fn handler<'a, 'b, 'c, 'info>(

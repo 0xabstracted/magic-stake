@@ -3,7 +3,7 @@ use crate::state::loyalty_rewards::LPRateSchedule;
 use crate::state::{max_counts::MaxCounts, Farm, FarmConfig, RewardType};
 use crate::state::{FixedRateSchedule, LATEST_FARM_VERSION};
 use anchor_lang::prelude::*;
-use anchor_lang::solana_program::{program::invoke, system_instruction};
+// use anchor_lang::solana_program::{program::invoke, system_instruction};
 use anchor_spl::token::{Mint, Token, TokenAccount};
 use gem_bank::{self, cpi::accounts::InitBank, program::GemBank};
 use gem_common::errors::ErrorCode;
@@ -11,7 +11,7 @@ use std::str::FromStr;
 
 
 pub const FEE_WALLET: &str = "Bi4UpEtKxnHwCw7b9xkMCouGT6xLNm8nixs2fTmxTevs"; //5th
-const FEE_LAMPORTS: u64 = 2_500_000_000; // 2.5 SOL per farm
+// const FEE_LAMPORTS: u64 = 2_500_000_000; // 2.5 SOL per farm
 
 #[derive(Accounts)]
 #[instruction(bump_auth: u8, bump_treasury: u8)]
@@ -87,7 +87,7 @@ impl<'info> InitFarm<'info> {
             },
         )
     }
-
+    /* 
     fn transfer_fee(&self) -> Result<()> {
         invoke(
             &system_instruction::transfer(self.payer.key, self.fee_acc.key, FEE_LAMPORTS),
@@ -99,6 +99,7 @@ impl<'info> InitFarm<'info> {
         )
         .map_err(Into::into)
     }
+    */
 }
 
 pub fn handler(

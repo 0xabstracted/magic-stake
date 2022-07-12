@@ -1,7 +1,7 @@
 use crate::instructions::FEE_WALLET;
 use anchor_lang::{
     prelude::*,
-    solana_program::{program::invoke, system_instruction},
+//    solana_program::{program::invoke, system_instruction},
 };
 use anchor_spl::token::{self, Token, Transfer};
 use gem_bank::{
@@ -16,7 +16,7 @@ use std::str::FromStr;
 
 use crate::state::Farmer;
 
-const FEE_LAMPORTS: u64 = 1_000_000; // 0.002 SOL per entire unstake op (charged twice, so 0.001 2x)
+// const FEE_LAMPORTS: u64 = 1_000_000; // 0.002 SOL per entire unstake op (charged twice, so 0.001 2x)
 
 #[derive(Accounts)]
 #[instruction(bump_auth: u8, bump_treasury: u8, bump_farmer: u8)]
@@ -69,7 +69,7 @@ impl<'info> Unstake<'info> {
             },
         )
     }
-
+    /* 
     fn pay_treasury(&self, lamports: u64) -> Result<()> {
         invoke(
             &system_instruction::transfer(self.identity.key, self.farm_treasury.key, lamports),
@@ -93,6 +93,7 @@ impl<'info> Unstake<'info> {
         )
         .map_err(Into::into)
     }
+    */
     fn pay_tokens_treasury_ctx(&self) -> CpiContext<'_,'_,'_,'info, Transfer<'info>> {
         CpiContext::new(
             self.token_program.to_account_info(), 
