@@ -7,8 +7,11 @@ use crate::state::Farmer;
 #[derive(Accounts)]
 #[instruction(bump : u8)]
 pub struct RefreshFarmerSigned<'info> {
+    // farm
     #[account(mut)]
     pub farm: Box<Account<'info, Farm>>,
+
+    // farmer
     #[account(mut, has_one = farm, has_one = identity, seeds = [
                 b"farmer".as_ref(),
                 farm.key().as_ref(),
@@ -16,7 +19,7 @@ pub struct RefreshFarmerSigned<'info> {
     ], 
     bump = bump)]
     pub farmer: Box<Account<'info, Farmer>>,
-    pub identity: Signer<'info>,
+    pub identity: Signer<'info>, // <--- the diff
 }
 
 pub fn handler(ctx: Context<RefreshFarmerSigned>, reenroll: bool) -> Result<()> {

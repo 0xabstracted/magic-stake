@@ -21,7 +21,7 @@ pub mod magic_stake {
         lp_type: LPType,
         farm_config: FarmConfig,
         max_counts: Option<MaxCounts>,
-        //    farm_treasury: Pubkey,
+        _farm_treasury: Pubkey,
     ) -> Result<()> {
         msg!("init farm");
         instructions::init_farm::handler(
@@ -32,7 +32,7 @@ pub mod magic_stake {
             lp_type,
             farm_config,
             max_counts,
-            //farm_treasury,
+            _farm_treasury,
         )
     }
 

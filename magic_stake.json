@@ -51,6 +51,11 @@
           "isSigner": true
         },
         {
+          "name": "feeAcc",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
           "name": "rent",
           "isMut": false,
           "isSigner": false
@@ -100,6 +105,10 @@
               "defined": "MaxCounts"
             }
           }
+        },
+        {
+          "name": "farmTreasury",
+          "type": "publicKey"
         }
       ]
     },
@@ -335,6 +344,11 @@
           "isSigner": true
         },
         {
+          "name": "feeAcc",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
           "name": "systemProgram",
           "isMut": false,
           "isSigner": false
@@ -352,7 +366,7 @@
         },
         {
           "name": "farmAuthority",
-          "isMut": true,
+          "isMut": false,
           "isSigner": false
         },
         {
@@ -378,6 +392,11 @@
         {
           "name": "gemBank",
           "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "feeAcc",
+          "isMut": true,
           "isSigner": false
         },
         {
@@ -438,6 +457,11 @@
         {
           "name": "gemBank",
           "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "feeAcc",
+          "isMut": true,
           "isSigner": false
         },
         {
@@ -629,6 +653,11 @@
         {
           "name": "gemBank",
           "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "feeAcc",
+          "isMut": true,
           "isSigner": false
         }
       ],
@@ -1026,7 +1055,7 @@
         "kind": "struct",
         "fields": [
           {
-            "name": "verison",
+            "name": "version",
             "type": "u16"
           },
           {
@@ -1046,7 +1075,7 @@
             "type": "publicKey"
           },
           {
-            "name": "farmAuthoritySeedBump",
+            "name": "farmAuthorityBumpSeed",
             "type": {
               "array": [
                 "u8",

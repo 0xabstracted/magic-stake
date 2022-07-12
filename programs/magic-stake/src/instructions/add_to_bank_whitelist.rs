@@ -51,6 +51,7 @@ pub fn handler(ctx: Context<AddToBankWhitelist>, whitelist_type: u8) -> Result<(
             .with_signer(&[&ctx.accounts.farm.farm_seeds()]),
         whitelist_type,
     )?;
+
     msg!(
         "{} added to bank whitelist",
         &ctx.accounts.address_to_whitelist.key()

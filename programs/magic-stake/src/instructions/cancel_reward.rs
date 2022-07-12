@@ -14,24 +14,22 @@ pub struct CancelReward<'info> {
     pub farm: Box<Account<'info, Farm>>,
     #[account(mut)]
     pub farm_manager: Signer<'info>,
-    ///CHECK:
+    /// CHECK:
     #[account(seeds = [farm.key().as_ref()], bump = bump_auth)]
     pub farm_authority: AccountInfo<'info>,
 
     // reward
     #[account(mut, seeds = [
-                b"reward_pot".as_ref(),
-                farm.key().as_ref(),
-                reward_mint.key().as_ref(),
-            ],
-            bump = bump_pot,
-    )]
+            b"reward_pot".as_ref(),
+            farm.key().as_ref(),
+            reward_mint.key().as_ref(),
+        ],
+        bump = bump_pot)]
     pub reward_pot: Box<Account<'info, TokenAccount>>,
     #[account(init_if_needed,
         associated_token::mint = reward_mint,
         associated_token::authority = receiver,
-        payer = farm_manager,
-    )]
+        payer = farm_manager)]
     pub reward_destination: Box<Account<'info, TokenAccount>>,
     pub reward_mint: Box<Account<'info, Mint>>,
     // unlike with funding, cancelled proceeds can be sent anywhere

@@ -3,24 +3,28 @@ use crate::state::loyalty_rewards::LPRateSchedule;
 use crate::state::{max_counts::MaxCounts, Farm, FarmConfig, RewardType};
 use crate::state::{FixedRateSchedule, LATEST_FARM_VERSION};
 use anchor_lang::prelude::*;
+use anchor_lang::solana_program::{program::invoke, system_instruction};
 use anchor_spl::token::{Mint, Token, TokenAccount};
-use gem_bank::{cpi::accounts::InitBank, program::GemBank};
+use gem_bank::{self, cpi::accounts::InitBank, program::GemBank};
 use gem_common::errors::ErrorCode;
-// use anchor_lang::solana_program::{program::invoke, system_instruction};
-// use std::str::FromStr;
+use std::str::FromStr;
 
-//pub const FEE_WALLET: &str = "2xhBxVVuXkdq2MRKerE9mr2s1szfHSedy21MVqf8gPoM"; //5th
-//const FEE_LAMPORTS: u64 = 2_500_000_000; // 2.5 SOL per farm
+
+pub const FEE_WALLET: &str = "2xhBxVVuXkdq2MRKerE9mr2s1szfHSedy21MVqf8gPoM"; //5th
+const FEE_LAMPORTS: u64 = 2_500_000_000; // 2.5 SOL per farm
 
 #[derive(Accounts)]
 #[instruction(bump_auth: u8, bump_treasury: u8)]
 pub struct InitFarm<'info> {
+    // farm
     #[account(init, payer = payer, space = 8 + std::mem::size_of::<Farm>())]
     pub farm: Box<Account<'info, Farm>>,
     pub farm_manager: Signer<'info>,
-    ///CHECK:
+    /// CHECK:
     #[account(mut, seeds = [farm.key().as_ref()], bump = bump_auth)]
     pub farm_authority: AccountInfo<'info>,
+
+    // reward a
     #[account(init, seeds = [
             b"reward_pot".as_ref(),
             farm.key().as_ref(),
@@ -56,11 +60,13 @@ pub struct InitFarm<'info> {
     #[account(mut)]
     pub bank: Signer<'info>,
     pub gem_bank: Program<'info, GemBank>,
+
+    // misc
     #[account(mut)]
     pub payer: Signer<'info>,
-    // ///CHECK:
-    // #[account(mut, address = Pubkey::from_str(FEE_WALLET).unwrap())]
-    // pub fee_acc: AccountInfo<'info>,
+    /// CHECK:
+    #[account(mut, address = Pubkey::from_str(FEE_WALLET).unwrap())]
+    pub fee_acc: AccountInfo<'info>,
     pub rent: Sysvar<'info, Rent>,
     pub token_program: Program<'info, Token>,
     pub system_program: Program<'info, System>,
@@ -72,6 +78,9 @@ impl<'info> InitFarm<'info> {
             self.gem_bank.to_account_info(),
             InitBank {
                 bank: self.bank.to_account_info(),
+                // using farm_authority, NOT farm_manager, coz on certain ixs (eg lock/unclock)
+                // we need manager's sig, but we don't have farm manager's KP.
+                // unfortunately this means we have to write a CPI ix for farm for each ix for bank
                 bank_manager: self.farm_authority.clone(),
                 payer: self.payer.to_account_info(),
                 system_program: self.system_program.to_account_info(),
@@ -79,17 +88,17 @@ impl<'info> InitFarm<'info> {
         )
     }
 
-    // fn transfer_fee(&self) -> Result<()> {
-    //     invoke(
-    //         &system_instruction::transfer(self.payer.key, self.fee_acc.key, FEE_LAMPORTS),
-    //         &[
-    //             self.payer.to_account_info(),
-    //             self.fee_acc.clone(),
-    //             self.system_program.to_account_info(),
-    //         ],
-    //     )
-    //     .map_err(Into::into)
-    // }
+    fn transfer_fee(&self) -> Result<()> {
+        invoke(
+            &system_instruction::transfer(self.payer.key, self.fee_acc.key, FEE_LAMPORTS),
+            &[
+                self.payer.to_account_info(),
+                self.fee_acc.clone(),
+                self.system_program.to_account_info(),
+            ],
+        )
+        .map_err(Into::into)
+    }
 }
 
 pub fn handler(
@@ -100,30 +109,31 @@ pub fn handler(
     //    reward_type_b: RewardType,
     farm_config: FarmConfig,
     max_counts: Option<MaxCounts>,
-    //    farm_treasury: Pubkey,
+    _farm_treasury: Pubkey,
 ) -> Result<()> {
-    // let (pk, _bump) = Pubkey::find_program_address(
-    //     &[b"treasury".as_ref(), ctx.accounts.farm.key().as_ref()],
-    //     ctx.program_id,
-    // );
-    // if farm_treasury.key() != pk {
-    //     return Err(error!(ErrorCode::InvalidParameter));
-    // }
-    // if farm_config.unstaking_fee_tokens < 0 || farm_config.unstaking_fee_tokens > 1000000 {
-    //     return Err(error!(ErrorCode::InvalidUnstakingFee));
-    // }
+    //manually verify treasury
+    let (pk, _bump) = Pubkey::find_program_address(
+        &[b"treasury".as_ref(), ctx.accounts.farm.key().as_ref()],
+        ctx.program_id,
+    );
+    if _farm_treasury.key() != pk {
+        return Err(error!(ErrorCode::InvalidParameter));
+    }
 
     if farm_config.unstaking_fee_percent > 100 {
         return Err(error!(ErrorCode::InvalidUnstakingFee));
     }
+
+    //record new farm details
     let farm = &mut ctx.accounts.farm;
-    farm.verison = LATEST_FARM_VERSION;
+
+    farm.version = LATEST_FARM_VERSION;
     farm.farm_manager = ctx.accounts.farm_manager.key();
     //    farm.farm_treasury = farm_treasury;
     farm.farm_treasury = ctx.accounts.farm_treasury_token.key();
     farm.farm_authority = ctx.accounts.farm_authority.key();
     farm.farm_authority_seed = farm.key();
-    farm.farm_authority_seed_bump = [bump_auth];
+    farm.farm_authority_bump_seed = [bump_auth];
     farm.bank = ctx.accounts.bank.key();
     farm.config = farm_config;
 
@@ -142,6 +152,8 @@ pub fn handler(
     if let Some(max_counts) = max_counts {
         farm.max_counts = max_counts;
     }
+
+    //do a cpi call to start a new bank
     gem_bank::cpi::init_bank(
         ctx.accounts
             .init_bank_ctx()

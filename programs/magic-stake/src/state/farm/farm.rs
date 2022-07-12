@@ -10,7 +10,7 @@ pub const LATEST_FARM_VERSION: u16 = 0;
 #[account]
 #[derive(Debug)]
 pub struct Farm {
-    pub verison: u16, //2
+    pub version: u16, //2
     /// authorizes funders, whitelists mints/creators, sets farm config, can give away farm managing authority
     pub farm_manager: Pubkey, //32
     /// used for collecting any fees earned by the farm
@@ -18,7 +18,7 @@ pub struct Farm {
     /// signs off on treasury payouts and on any operations related to the bank (configured as bank manager)
     pub farm_authority: Pubkey, //32
     pub farm_authority_seed: Pubkey, //32
-    pub farm_authority_seed_bump: [u8; 1], //1
+    pub farm_authority_bump_seed: [u8; 1], //1
     /// each farm controls a single bank. each farmer gets a vault in that bank
     pub bank: Pubkey, //32
     pub config: FarmConfig, //24
@@ -77,7 +77,7 @@ impl Farm {
     pub fn farm_seeds(&self) -> [&[u8]; 2] {
         [
             self.farm_authority_seed.as_ref(),
-            &self.farm_authority_seed_bump,
+            &self.farm_authority_bump_seed,
         ]
     }
 

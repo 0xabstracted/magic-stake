@@ -1,4 +1,4 @@
-//use crate::instructions::FEE_WALLET;
+use crate::instructions::FEE_WALLET;
 use crate::state::Farm;
 use crate::state::Farmer;
 use crate::state::FixedRateSchedule;
@@ -6,10 +6,10 @@ use crate::state::LPRateSchedule;
 use anchor_lang::prelude::*;
 use gem_bank::{self, cpi::accounts::InitVault, program::GemBank, state::Bank};
 use gem_common::TryAdd;
-// use std::str::FromStr;
-// use anchor_lang::solana_program::{program::invoke, system_instruction};
+use std::str::FromStr;
+use anchor_lang::solana_program::{program::invoke, system_instruction};
 
-//const FEE_LAMPORTS: u64 = 10_000_000; // 0.01 SOL per farmer
+const FEE_LAMPORTS: u64 = 10_000_000; // 0.01 SOL per farmer
 
 #[derive(Accounts)]
 pub struct InitFarmer<'info> {
@@ -41,16 +41,16 @@ pub struct InitFarmer<'info> {
     // misc
     #[account(mut)]
     pub payer: Signer<'info>,
-    // ///CHECK:
-    // #[account(mut, address = Pubkey::from_str(FEE_WALLET).unwrap())]
-    // pub fee_acc: AccountInfo<'info>,
+    /// CHECK:
+    #[account(mut, address = Pubkey::from_str(FEE_WALLET).unwrap())]
+    pub fee_acc: AccountInfo<'info>,
     pub system_program: Program<'info, System>,
 }
 
 impl<'info> InitFarmer<'info> {
     fn init_vault_ctx(&self) -> CpiContext<'_, '_, '_, 'info, InitVault<'info>> {
         CpiContext::new(
-            self.gem_bank.to_account_info(), 
+            self.gem_bank.to_account_info(),
             InitVault {
                 bank: self.bank.to_account_info(),
                 vault: self.vault.clone(),
@@ -62,17 +62,17 @@ impl<'info> InitFarmer<'info> {
         )
     }
 
-    // fn _transfer_fee(&self) -> Result<()> {
-    //     invoke(
-    //         &system_instruction::transfer(self.payer.key, self.fee_acc.key, FEE_LAMPORTS),
-    //         &[
-    //             self.payer.to_account_info(),
-    //             self.fee_acc.clone(),
-    //             self.system_program.to_account_info(),
-    //         ],
-    //     )
-    //     .map_err(Into::into)
-    // }
+    fn transfer_fee(&self) -> Result<()> {
+        invoke(
+            &system_instruction::transfer(self.payer.key, self.fee_acc.key, FEE_LAMPORTS),
+            &[
+                self.payer.to_account_info(),
+                self.fee_acc.clone(),
+                self.system_program.to_account_info(),
+            ],
+        )
+        .map_err(Into::into)
+    }
 }
 
 pub fn handler(ctx: Context<InitFarmer>) -> Result<()> {

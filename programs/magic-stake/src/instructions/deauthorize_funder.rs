@@ -15,15 +15,14 @@ pub struct DeauthorizeFunder<'info> {
     // funder
     /// CHECK:
     pub funder_to_deauthorize: AccountInfo<'info>,
-    #[account(mut,
-            has_one = farm,
-            constraint = authorization_proof.authorized_funder == funder_to_deauthorize.key(),
-            seeds = [
-                b"authorization".as_ref(),
-                farm.key().as_ref(),
-                funder_to_deauthorize.key().as_ref(),
-            ],
-            bump = bump)]
+    #[account(mut, has_one = farm,
+        constraint = authorization_proof.authorized_funder == funder_to_deauthorize.key(),
+        seeds = [
+            b"authorization".as_ref(),
+            farm.key().as_ref(),
+            funder_to_deauthorize.key().as_ref(),
+        ],
+        bump = bump)]
     authorization_proof: Box<Account<'info, AuthorizationProof>>,
 
     // misc

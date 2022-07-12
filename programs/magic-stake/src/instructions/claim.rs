@@ -10,11 +10,14 @@ use anchor_spl::{
 #[derive(Accounts)]
 #[instruction(bump_auth: u8, bump_farmer: u8, bump_pot_a: u8, bump_pot_b: u8)]
 pub struct Claim<'info> {
+    // farm
     #[account(mut, has_one = farm_authority)]
     pub farm: Box<Account<'info, Farm>>,
-    ///CHECK:
+    /// CHECK:
     #[account(seeds = [farm.key().as_ref()], bump = bump_auth)]
     pub farm_authority: AccountInfo<'info>,
+
+    // farmer
     #[account(mut, has_one = farm, has_one = identity, seeds = [
             b"farmer".as_ref(),
             farm.key().as_ref(),
@@ -22,8 +25,10 @@ pub struct Claim<'info> {
         ],
         bump = bump_farmer)]
     pub farmer: Box<Account<'info, Farmer>>,
-    #[account(mut)]
+    #[account(mut)] //payer
     pub identity: Signer<'info>,
+
+    // reward a
     #[account(mut, seeds = [
             b"reward_pot".as_ref(),
             farm.key().as_ref(),
@@ -32,7 +37,7 @@ pub struct Claim<'info> {
         bump = bump_pot_a)]
     pub reward_a_pot: Box<Account<'info, TokenAccount>>,
     pub reward_a_mint: Box<Account<'info, Mint>>,
-    #[account(init_if_needed, 
+    #[account(init_if_needed,
         associated_token::mint = reward_a_mint,
         associated_token::authority = identity,
         payer = identity)]
@@ -40,7 +45,7 @@ pub struct Claim<'info> {
     // #[account(mut, seeds = [
     //         b"reward_pot".as_ref(),
     //         farm.key().as_ref(),
-    //         reward_a_mint.key().as_ref(),
+    //         reward_b_mint.key().as_ref(),
     //     ],
     //     bump = bump_pot_b)]
     // pub reward_b_pot: Box<Account<'info, TokenAccount>>,
@@ -56,14 +61,14 @@ pub struct Claim<'info> {
     pub rent: Sysvar<'info, Rent>,
 }
 
-impl <'info> Claim <'info> {
+impl<'info> Claim<'info> {
     fn transfer_a_ctx(&self) -> CpiContext<'_, '_, '_, 'info, Transfer<'info>> {
         CpiContext::new(
-            self.token_program.to_account_info(), 
+            self.token_program.to_account_info(),
             Transfer {
-                 from: self.reward_a_pot.to_account_info(), 
-                 to: self.reward_a_destination.to_account_info(), 
-                 authority: self.farm_authority.to_account_info(), 
+                from: self.reward_a_pot.to_account_info(),
+                to: self.reward_a_destination.to_account_info(),
+                authority: self.farm_authority.to_account_info(),
             },
         )
     }

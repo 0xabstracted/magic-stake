@@ -1,7 +1,7 @@
 use crate::state::Farm;
 use crate::state::Farmer;
 use anchor_lang::prelude::*;
-//use anchor_lang::solana_program::{instruction, program::invoke};
+use anchor_lang::solana_program::{system_instruction, program::invoke};
 use anchor_spl::token::{Mint, Token, TokenAccount};
 use gem_bank::instructions::calc_rarity_points;
 use gem_bank::{
@@ -11,9 +11,10 @@ use gem_bank::{
     state::{Bank, Vault},
 };
 use gem_common::now_ts;
-// use crate::instructions::FEE_WALLET;
-// const FEE_LAMPORTS: u64 = 2_000_000; // 0.002 SOL per stake/unstake
-// const FD_FEE_LAMPORTS: u64 = 1_000_000; // half of that for FDs
+use std::str::FromStr;
+use crate::instructions::FEE_WALLET;
+const FEE_LAMPORTS: u64 = 2_000_000; // 0.002 SOL per stake/unstake
+const FD_FEE_LAMPORTS: u64 = 1_000_000; // half of that for FDs
 
 #[derive(Accounts)]
 #[instruction(bump_farmer: u8)]
@@ -27,12 +28,12 @@ pub struct FlashDeposit<'info> {
 
     // farmer
     #[account(mut, has_one = farm, has_one = identity, has_one = vault,
-            seeds = [
-                b"farmer".as_ref(),
-                farm.key().as_ref(),
-                identity.key().as_ref(),
-            ],
-            bump = bump_farmer)]
+        seeds = [
+            b"farmer".as_ref(),
+            farm.key().as_ref(),
+            identity.key().as_ref(),
+        ],
+        bump = bump_farmer)]
     pub farmer: Box<Account<'info, Farmer>>,
     #[account(mut)]
     pub identity: Signer<'info>,
@@ -54,15 +55,15 @@ pub struct FlashDeposit<'info> {
     #[account(mut)]
     pub gem_source: Box<Account<'info, TokenAccount>>,
     pub gem_mint: Box<Account<'info, Mint>>,
-    ///CHECK:
+    /// CHECK:
     pub gem_rarity: AccountInfo<'info>,
     pub token_program: Program<'info, Token>,
     pub system_program: Program<'info, System>,
     pub rent: Sysvar<'info, Rent>,
     pub gem_bank: Program<'info, GemBank>,
-    // /// CHECK:
-    // #[account(mut, address = Pubkey::from_str(FEE_WALLET).unwrap())]
-    // pub fee_acc: AccountInfo<'info>,
+    /// CHECK:
+    #[account(mut, address = Pubkey::from_str(FEE_WALLET).unwrap())]
+    pub fee_acc: AccountInfo<'info>,
     //
     // remaining accounts could be passed, in this order:
     // - mint_whitelist_proof
@@ -102,17 +103,17 @@ impl<'info> FlashDeposit<'info> {
         )
     }
 
-    // fn _transfer_fee(&self, fee: u64) -> Result<()> {
-    //     invoke(
-    //         &system_instruction::transfer(self.identity.key, self.fee_acc.key, fee),
-    //         &[
-    //             self.identity.to_account_info(),
-    //             self.fee_acc.clone(),
-    //             self.system_program.to_account_info(),
-    //         ],
-    //     )
-    //     .map_err(Into::into)
-    // }
+    fn transfer_fee(&self, fee: u64) -> Result<()> {
+        invoke(
+            &system_instruction::transfer(self.identity.key, self.fee_acc.key, fee),
+            &[
+                self.identity.to_account_info(),
+                self.fee_acc.clone(),
+                self.system_program.to_account_info(),
+            ],
+        )
+        .map_err(Into::into)
+    }
 }
 
 pub fn handler<'a, 'b, 'c, 'info>(
@@ -121,6 +122,7 @@ pub fn handler<'a, 'b, 'c, 'info>(
     bump_rarity: u8,
     amount: u64,
 ) -> Result<()> {
+    // flash deposit a gem into a locked vault
     gem_bank::cpi::set_vault_lock(
         ctx.accounts
             .set_lock_vault_ctx()

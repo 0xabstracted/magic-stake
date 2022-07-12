@@ -23,8 +23,7 @@ pub struct AuthorizeFunder<'info> {
         ],
         bump,
         payer = farm_manager,
-        space = 8 + std::mem::size_of::<AuthorizationProof>()
-    )]
+        space = 8 + std::mem::size_of::<AuthorizationProof>())]
     authorization_proof: Box<Account<'info, AuthorizationProof>>,
 
     // misc
