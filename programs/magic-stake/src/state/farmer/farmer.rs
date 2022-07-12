@@ -89,11 +89,11 @@ impl Farmer {
         Ok(())
     }
 
-    fn can_end_staking(&mut self, now_ts: u64) -> bool {
+    fn can_end_staking(&self, now_ts: u64) -> bool {
         now_ts >= self.min_staking_end_ts
     }
 
-    fn can_end_cooldown(&mut self, now_ts: u64) -> bool {
+    fn can_end_cooldown(&self, now_ts: u64) -> bool {
         now_ts >= self.cooldown_end_ts
     }
 }

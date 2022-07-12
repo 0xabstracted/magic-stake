@@ -14,8 +14,8 @@ pub struct FarmerReward {
     pub paid_out_reward: u64, //8
     pub accrued_reward: u64,                       //8
     pub variable_reward: FarmerVariableRateReward, //32
-    pub fixed_reward: FarmerFixedRateReward,       //136
-    pub probable_reward: FarmerProbableRateReward, //168
+    pub fixed_rate: FarmerFixedRateReward,       //136
+    pub probable_rate: FarmerProbableRateReward, //168
     _reserved: [u8; 32],                           //32
 }
 
@@ -44,13 +44,13 @@ impl FarmerReward {
 
     pub fn update_fixed_reward(&mut self, now_ts: u64, newly_accrued_reward: u64) -> Result<()> {
         self.accrued_reward.try_add_assign(newly_accrued_reward)?;
-        self.fixed_reward.last_updated_ts = self.fixed_reward.reward_upper_bound(now_ts)?;
+        self.fixed_rate.last_updated_ts = self.fixed_rate.reward_upper_bound(now_ts)?;
         Ok(())
     }
     pub fn update_probable_reward(&mut self, now_ts: u64, newly_accrued_reward: u64) -> Result<()> {
         self.accrued_reward.try_add_assign(newly_accrued_reward)?;
-        self.probable_reward.probable_last_updated_ts =
-            self.probable_reward.probable_reward_upper_bound(now_ts)?;
+        self.probable_rate.probable_last_updated_ts =
+            self.probable_rate.probable_reward_upper_bound(now_ts)?;
         Ok(())
     }
 }

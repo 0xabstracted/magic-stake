@@ -6,18 +6,22 @@ use crate::state::*;
 #[derive(Accounts)]
 #[instruction(bump_auth: u8)]
 pub struct AddToBankWhitelist<'info> {
+    // farm
     #[account(has_one = farm_manager, has_one = farm_authority, has_one = bank)]
     pub farm: Box<Account<'info, Farm>>,
     #[account(mut)]
     pub farm_manager: Signer<'info>,
-    ///CHECK:
+    /// CHECK:
     #[account(seeds = [farm.key().as_ref()], bump = bump_auth)]
     pub farm_authority: AccountInfo<'info>,
+
+    // cpi
     #[account(mut)]
     pub bank: Box<Account<'info, Bank>>,
-    ///CHECK:
+    /// CHECK:
     pub address_to_whitelist: AccountInfo<'info>,
-    ///CHECK:
+    // trying to deserialize here leads to errors (doesn't exist yet)
+    /// CHECK:
     #[account(mut)]
     pub whitelist_proof: AccountInfo<'info>,
     pub system_program: Program<'info, System>,

@@ -6,8 +6,11 @@ use gem_common::now_ts;
 #[derive(Accounts)]
 #[instruction(bump: u8)]
 pub struct RefreshFarmer<'info> {
+    // farm
     #[account(mut)]
     pub farm: Box<Account<'info, Farm>>,
+
+    // farmer
     #[account(mut, has_one = farm, has_one = identity, seeds = [
         b"farmer".as_ref(),
         farm.key().as_ref(),
@@ -15,7 +18,8 @@ pub struct RefreshFarmer<'info> {
     ], 
     bump = bump)]
     pub farmer: Box<Account<'info, Farmer>>,
-    ///CHECK:
+    //not a signer intentionally
+    /// CHECK:
     pub identity: AccountInfo<'info>,
 }
 

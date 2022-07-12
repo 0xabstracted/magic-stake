@@ -46,10 +46,10 @@ impl <'info> Stake <'info> {
     fn set_vault_lock_ctx(&self) -> CpiContext<'_, '_ , '_ ,'info, SetVaultLock<'info>> {
         CpiContext::new(
             self.gem_bank.to_account_info(),
-            SetVaultLock { 
-                bank: self.bank.to_account_info(), 
-                bank_manager: self.farm_authority.clone(), 
-                vault: self.vault.to_account_info(), 
+            SetVaultLock {
+                bank: self.bank.to_account_info(),
+                vault: self.vault.to_account_info(),
+                bank_manager: self.farm_authority.clone(),
             },
         )
     }

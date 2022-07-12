@@ -27,7 +27,11 @@ pub struct Unstake<'info> {
     #[account(mut, seeds = [b"treasury".as_ref(), farm.key().as_ref()], bump = bump_treasury)]
     pub farm_treasury: AccountInfo<'info>,
     #[account(mut, has_one = farm, has_one = identity, has_one = vault, 
-            seeds = [b"farmer".as_ref(), farm.key().as_ref(), identity.key().as_ref()],
+            seeds = [
+	    	b"farmer".as_ref(), 
+	    	farm.key().as_ref(), 
+	    	identity.key().as_ref(),
+	    ],
             bump = bump_farmer )]
     pub farmer: Box<Account<'info, Farmer>>,
     #[account(mut)]
@@ -48,10 +52,10 @@ impl<'info> Unstake <'info>{
     fn set_lock_vault_ctx(&self) -> CpiContext<'_,'_,'_, 'info,SetVaultLock<'info>> {
         CpiContext::new(
             self.gem_bank.to_account_info(),
-            SetVaultLock { 
-                bank: self.bank.to_account_info(), 
-                bank_manager: self.farm_authority.clone(), 
-                vault: self.vault.to_account_info()
+            SetVaultLock {
+                bank: self.bank.to_account_info(),
+                vault: self.vault.to_account_info(),
+                bank_manager: self.farm_authority.clone(),
             },
         )
     }
@@ -90,6 +94,7 @@ impl<'info> Unstake <'info>{
 }
 
 pub fn handler(ctx: Context<Unstake>, skip_rewards: bool) -> Result<()> {
+    // collect any unstaking fee
     let farm = &ctx.accounts.farm;
     if ctx.accounts.farmer.state == FarmerState::Staked && farm.config.unstaking_fee_percent > 0 && farm.config.unstaking_fee_percent < 100 {
         //ctx.accounts.pay_treasury(farm.config.unstaking_fee_lamp)?
@@ -104,16 +109,24 @@ pub fn handler(ctx: Context<Unstake>, skip_rewards: bool) -> Result<()> {
     let farm = &mut ctx.accounts.farm;
     let farmer = &mut ctx.accounts.farmer;
     let now_ts = now_ts()?;
+
+    // skipping rewards is an EMERGENCY measure in case farmer's rewards are overflowing
+    // at least this lets them get their assets out
     if !skip_rewards {
         farm.update_rewards(now_ts, Some(farmer), false)?;
     }
-    farm.update_lp_points(now_ts, Some(farmer), false)?;
+
+    // end staking (will cycle through state on repeated calls)
     farm.end_staking(now_ts, farmer)?;
+
     if farmer.state == FarmerState::Unstaked {
+        // unlock the vault so the user can withdraw their gems
         gem_bank::cpi::set_vault_lock(
-            ctx.accounts.set_lock_vault_ctx()
-                            .with_signer(&[&ctx.accounts.farm.farm_seeds()]), 
-        false,)?;
+            ctx.accounts
+                .set_lock_vault_ctx()
+                .with_signer(&[&ctx.accounts.farm.farm_seeds()]),
+            false,
+        )?;
     }
     
     //ctx.accounts.transfer_fee()?;

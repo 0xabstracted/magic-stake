@@ -67,7 +67,7 @@ impl FixedRateReward {
         reenroll: bool,
     ) -> Result<()> {
         let newly_accrued_reward = farmer_reward
-            .fixed_reward
+            .fixed_rate
             .newly_accrued_reward(now_ts, farmer_rarity_points_staked)?;
         // update farm (move amount from reserved to accrued)
         funds
@@ -76,8 +76,8 @@ impl FixedRateReward {
         self.reserved_amount.try_add_assign(newly_accrued_reward)?;
         // update farmer
         farmer_reward.update_fixed_reward(now_ts, newly_accrued_reward)?;
-        if farmer_reward.fixed_reward.is_staked()
-            && farmer_reward.fixed_reward.is_time_to_graduate(now_ts)?
+        if farmer_reward.fixed_rate.is_staked()
+            && farmer_reward.fixed_rate.is_time_to_graduate(now_ts)?
         {
             let original_staking_start =
                 self.graduate_farmer(farmer_rarity_points_staked, farmer_reward)?;
@@ -107,9 +107,9 @@ impl FixedRateReward {
     ) -> Result<()> {
         let remaining_duration = times.remaining_duration(now_ts)?;
         //calc any bonus due to previous staking
-        farmer_reward.fixed_reward.begin_staking_ts = original_staking_start.unwrap_or(now_ts);
-        farmer_reward.fixed_reward.begin_schedule_ts = now_ts;
-        let bonus_time = farmer_reward.fixed_reward.loyal_staker_bonus_time()?;
+        farmer_reward.fixed_rate.begin_staking_ts = original_staking_start.unwrap_or(now_ts);
+        farmer_reward.fixed_rate.begin_schedule_ts = now_ts;
+        let bonus_time = farmer_reward.fixed_rate.loyal_staker_bonus_time()?;
 
         //calc how much we have to reserve for the farmer
         let reserve_amount = self.schedule.reward_amount(
@@ -122,9 +122,9 @@ impl FixedRateReward {
         }
 
         //update farmer
-        farmer_reward.fixed_reward.last_updated_ts = now_ts;
-        farmer_reward.fixed_reward.promised_schedule = self.schedule;
-        farmer_reward.fixed_reward.promised_duration = remaining_duration;
+        farmer_reward.fixed_rate.last_updated_ts = now_ts;
+        farmer_reward.fixed_rate.promised_schedule = self.schedule;
+        farmer_reward.fixed_rate.promised_duration = remaining_duration;
 
         //update farm
         self.reserved_amount.try_add_assign(reserve_amount)?;
@@ -136,14 +136,14 @@ impl FixedRateReward {
         farmer_rarity_points_staked: u64,
         farmer_reward: &mut FarmerReward,
     ) -> Result<u64> {
-        let original_begin_staking_ts = farmer_reward.fixed_reward.begin_staking_ts;
+        let original_begin_staking_ts = farmer_reward.fixed_rate.begin_staking_ts;
 
         //reduce reserve amount
         let voided_reward = farmer_reward
-            .fixed_reward
+            .fixed_rate
             .voided_reward(farmer_rarity_points_staked)?;
         self.reserved_amount.try_sub_assign(voided_reward)?;
-        farmer_reward.fixed_reward = FarmerFixedRateReward::default();
+        farmer_reward.fixed_rate = FarmerFixedRateReward::default();
         // msg!("graduated farmer on {}", now_ts);
         Ok(original_begin_staking_ts)
     }

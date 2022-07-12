@@ -7,18 +7,23 @@ use anchor_lang::{
 #[derive(Accounts)]
 #[instruction(bump_auth: u8, bump_treasury: u8)]
 pub struct TreasuryPayout<'info> {
+    // farm
     #[account(mut, has_one = farm_authority, has_one = farm_manager, has_one = farm_treasury)]
     pub farm: Box<Account<'info, Farm>>,
     pub farm_manager: Signer<'info>,
-    ///CHECK:
+    /// CHECK:
     #[account(seeds = [farm.key().as_ref()], bump = bump_auth)]
     pub farm_authority: AccountInfo<'info>,
-    ///CHECK:
+    /// CHECK:
     #[account(mut, seeds = [b"treasury".as_ref(), farm.key().as_ref()], bump = bump_treasury)]
     pub farm_treasury: AccountInfo<'info>,
-    ///CHECK:
+
+    // destination
+    /// CHECK:
     #[account(mut)]
     pub destination: AccountInfo<'info>,
+
+    // misc
     pub system_program: Program<'info, System>,
 }
 

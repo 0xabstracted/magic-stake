@@ -4,10 +4,13 @@ use anchor_spl::token::Mint;
 
 #[derive(Accounts)]
 pub struct LockReward<'info> {
+    // farm
     #[account(mut, has_one = farm_manager)]
     pub farm: Box<Account<'info, Farm>>,
     #[account(mut)]
     pub farm_manager: Signer<'info>,
+
+    // reward
     pub reward_mint: Box<Account<'info, Mint>>,
 }
 

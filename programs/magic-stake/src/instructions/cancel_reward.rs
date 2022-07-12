@@ -9,13 +9,16 @@ use gem_common::now_ts;
 #[derive(Accounts)]
 #[instruction(bump_auth: u8, bump_pot: u8)]
 pub struct CancelReward<'info> {
-    #[account(mut, has_one = farm_authority, has_one = farm_manager)]
+    // farm
+    #[account(mut, has_one = farm_manager, has_one = farm_authority)]
     pub farm: Box<Account<'info, Farm>>,
     #[account(mut)]
     pub farm_manager: Signer<'info>,
     ///CHECK:
     #[account(seeds = [farm.key().as_ref()], bump = bump_auth)]
     pub farm_authority: AccountInfo<'info>,
+
+    // reward
     #[account(mut, seeds = [
                 b"reward_pot".as_ref(),
                 farm.key().as_ref(),
@@ -31,9 +34,12 @@ pub struct CancelReward<'info> {
     )]
     pub reward_destination: Box<Account<'info, TokenAccount>>,
     pub reward_mint: Box<Account<'info, Mint>>,
-    ///CHECK:
+    // unlike with funding, cancelled proceeds can be sent anywhere
+    /// CHECK:
     #[account(mut)]
     pub receiver: AccountInfo<'info>,
+
+    // misc
     pub token_program: Program<'info, Token>,
     pub associated_token_program: Program<'info, AssociatedToken>,
     pub system_program: Program<'info, System>,
@@ -54,10 +60,15 @@ impl<'info> CancelReward<'info> {
 }
 
 pub fn handler(ctx: Context<CancelReward>) -> Result<()> {
+    // update existing rewards
     let farm = &mut ctx.accounts.farm;
     let now_ts = now_ts()?;
     farm.update_rewards(now_ts, None, true)?;
+
+    // calculate cancellation amount while recording cancellation
     let cancel_amount = farm.cancel_reward_by_mint(now_ts, ctx.accounts.reward_mint.key())?;
+
+    // do the transfer
     token::transfer(
         ctx.accounts
             .transfer_ctx()
@@ -67,7 +78,7 @@ pub fn handler(ctx: Context<CancelReward>) -> Result<()> {
     msg!(
         "{} reward cancelled, {} tokens refunded",
         ctx.accounts.reward_mint.key(),
-        cancel_amount
+        cancel_amount,
     );
     Ok(())
 }

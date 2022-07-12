@@ -24,6 +24,7 @@ pub fn handler(ctx: Context<RefreshFarmerSigned>, reenroll: bool) -> Result<()> 
     let farmer = &mut ctx.accounts.farmer;
     let now_ts = now_ts()?;
     farm.update_rewards(now_ts, Some(farmer), reenroll)?;
-    msg!("updated farmer rewards");
+
+    msg!("{} farmer refreshed (SIGNED)", farmer.key());
     Ok(())
 }

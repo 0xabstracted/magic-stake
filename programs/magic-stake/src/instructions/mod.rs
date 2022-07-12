@@ -35,3 +35,11 @@ pub use stake::*;
 pub use treasury_payout::*;
 pub use unstake::*;
 pub use update_farm::*;
+
+// have to duplicate or this won't show up in IDL
+use anchor_lang::prelude::*;
+#[derive(AnchorSerialize, AnchorDeserialize, Clone, Debug, Default, PartialEq)]
+pub struct RarityConfig {
+    pub mint: Pubkey,
+    pub rarity_points: u16,
+}

@@ -11,16 +11,18 @@ use crate::state::Farm;
 #[derive(Accounts)]
 #[instruction(bump_auth: u8)]
 pub struct RemoveFromBankWhitelist<'info> {
-    #[account(mut, has_one = farm_manager, has_one = farm_authority, has_one = bank)]
+    #[account(has_one = farm_manager, has_one = farm_authority, has_one = bank)]
     pub farm: Box<Account<'info, Farm>>,
     #[account(mut)]
     pub farm_manager: Signer<'info>,
-    ///CHECK:
+    /// CHECK:
     #[account(mut, seeds = [farm.key().as_ref()], bump = bump_auth)]
     pub farm_authority: AccountInfo<'info>,
+
+    // cpi
     #[account(mut)]
     pub bank: Box<Account<'info, Bank>>,
-    ///CHECK:
+    /// CHECK:
     pub address_to_remove: AccountInfo<'info>,
     #[account(mut)]
     pub whitelist_proof: Box<Account<'info, WhitelistProof>>,
@@ -35,10 +37,10 @@ impl<'info> RemoveFromBankWhitelist<'info> {
             self.gem_bank.to_account_info(),
             RemoveFromWhitelist {
                 bank: self.bank.to_account_info(),
-                bank_manager: self.farm_manager.to_account_info(),
-                funds_receiver: self.farm_manager.to_account_info(),
-                address_to_remove: self.address_to_remove.to_account_info(),
+                bank_manager: self.farm_authority.clone(),
+                address_to_remove: self.address_to_remove.clone(),
                 whitelist_proof: self.whitelist_proof.to_account_info(),
+                funds_receiver: self.farm_manager.to_account_info(),
             },
         )
     }

@@ -251,7 +251,7 @@
       "accounts": [
         {
           "name": "farm",
-          "isMut": true,
+          "isMut": false,
           "isSigner": false
         },
         {
@@ -1198,6 +1198,22 @@
   ],
   "types": [
     {
+      "name": "RarityConfig",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "mint",
+            "type": "publicKey"
+          },
+          {
+            "name": "rarityPoints",
+            "type": "u16"
+          }
+        ]
+      }
+    },
+    {
       "name": "Number128",
       "type": {
         "kind": "struct",
@@ -1556,13 +1572,13 @@
             }
           },
           {
-            "name": "fixedReward",
+            "name": "fixedRate",
             "type": {
               "defined": "FarmerFixedRateReward"
             }
           },
           {
-            "name": "probableReward",
+            "name": "probableRate",
             "type": {
               "defined": "FarmerProbableRateReward"
             }

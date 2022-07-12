@@ -8,5 +8,7 @@ use anchor_lang::prelude::*;
 pub struct AuthorizationProof {
     pub authorized_funder: Pubkey,
     pub farm: Pubkey,
+
+    /// reserved for future updates, has to be /8
     _reserved: [u8; 32],
 }

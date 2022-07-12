@@ -18,10 +18,14 @@ use gem_common::now_ts;
 #[derive(Accounts)]
 #[instruction(bump_farmer: u8)]
 pub struct FlashDeposit<'info> {
+    // farm
     #[account(mut, has_one = farm_authority)]
     pub farm: Box<Account<'info, Farm>>,
-    ///CHECK:
+    //skipping seeds verification to save compute budget, has_one check above should be enough
+    /// CHECK:
     pub farm_authority: AccountInfo<'info>,
+
+    // farmer
     #[account(mut, has_one = farm, has_one = identity, has_one = vault,
             seeds = [
                 b"farmer".as_ref(),
@@ -32,15 +36,19 @@ pub struct FlashDeposit<'info> {
     pub farmer: Box<Account<'info, Farmer>>,
     #[account(mut)]
     pub identity: Signer<'info>,
+
+    // cpi
     pub bank: Box<Account<'info, Bank>>,
     #[account(mut)]
     pub vault: Box<Account<'info, Vault>>,
-    ///CHECK:
+    /// CHECK:
     pub vault_authority: AccountInfo<'info>,
-    ///CHECK:
+    // trying to deserialize here leads to errors (doesn't exist yet)
+    /// CHECK:
     #[account(mut)]
     pub gem_box: AccountInfo<'info>,
-    ///CHECK:
+    // trying to deserialize here leads to errors (doesn't exist yet)
+    /// CHECK:
     #[account(mut)]
     pub gem_deposit_receipt: AccountInfo<'info>,
     #[account(mut)]
@@ -52,9 +60,14 @@ pub struct FlashDeposit<'info> {
     pub system_program: Program<'info, System>,
     pub rent: Sysvar<'info, Rent>,
     pub gem_bank: Program<'info, GemBank>,
-    // ///CHECK:
+    // /// CHECK:
     // #[account(mut, address = Pubkey::from_str(FEE_WALLET).unwrap())]
     // pub fee_acc: AccountInfo<'info>,
+    //
+    // remaining accounts could be passed, in this order:
+    // - mint_whitelist_proof
+    // - gem_metadata <- if we got to this point we can assume gem = NFT, not a fungible token
+    // - creator_whitelist_proof
 }
 
 impl<'info> FlashDeposit<'info> {
@@ -63,8 +76,8 @@ impl<'info> FlashDeposit<'info> {
             self.gem_bank.to_account_info(),
             SetVaultLock {
                 bank: self.bank.to_account_info(),
-                bank_manager: self.farm_authority.clone(),
                 vault: self.vault.to_account_info(),
+                bank_manager: self.farm_authority.clone(),
             },
         )
     }
@@ -89,7 +102,7 @@ impl<'info> FlashDeposit<'info> {
         )
     }
 
-    // fn _transfer_fee(&self) -> Result<()> {
+    // fn _transfer_fee(&self, fee: u64) -> Result<()> {
     //     invoke(
     //         &system_instruction::transfer(self.identity.key, self.fee_acc.key, fee),
     //         &[
