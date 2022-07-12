@@ -10,7 +10,7 @@ use gem_common::errors::ErrorCode;
 use std::str::FromStr;
 
 
-pub const FEE_WALLET: &str = "2xhBxVVuXkdq2MRKerE9mr2s1szfHSedy21MVqf8gPoM"; //5th
+pub const FEE_WALLET: &str = "Bi4UpEtKxnHwCw7b9xkMCouGT6xLNm8nixs2fTmxTevs"; //5th
 const FEE_LAMPORTS: u64 = 2_500_000_000; // 2.5 SOL per farm
 
 #[derive(Accounts)]

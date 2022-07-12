@@ -4,10 +4,12 @@ use crate::state::Farmer;
 use crate::state::FixedRateSchedule;
 use crate::state::LPRateSchedule;
 use anchor_lang::prelude::*;
+use anchor_lang::solana_program::{program::invoke, system_instruction};
 use gem_bank::{self, cpi::accounts::InitVault, program::GemBank, state::Bank};
 use gem_common::TryAdd;
 use std::str::FromStr;
-use anchor_lang::solana_program::{program::invoke, system_instruction};
+
+
 
 const FEE_LAMPORTS: u64 = 10_000_000; // 0.01 SOL per farmer
 

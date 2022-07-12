@@ -12,11 +12,11 @@ pub struct RefreshFarmer<'info> {
 
     // farmer
     #[account(mut, has_one = farm, has_one = identity, seeds = [
-        b"farmer".as_ref(),
-        farm.key().as_ref(),
-        identity.key().as_ref(),
-    ], 
-    bump = bump)]
+            b"farmer".as_ref(),
+            farm.key().as_ref(),
+            identity.key().as_ref(),
+        ],
+        bump = bump)]
     pub farmer: Box<Account<'info, Farmer>>,
     //not a signer intentionally
     /// CHECK:
@@ -27,6 +27,7 @@ pub fn handler(ctx: Context<RefreshFarmer>) -> Result<()> {
     let farm = &mut ctx.accounts.farm;
     let farmer = &mut ctx.accounts.farmer;
     let now_ts = now_ts()?;
+
     farm.update_rewards(now_ts, Some(farmer), true)?;
     farm.update_lp_points(now_ts, Some(farmer), true)?;
     msg!("{} farmer refreshed", farmer.key());
