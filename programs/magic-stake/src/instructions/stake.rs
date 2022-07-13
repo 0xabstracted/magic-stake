@@ -97,7 +97,10 @@ pub fn handler(ctx: Context<Stake>) -> Result<()> {
     farm.update_rewards(now_ts, Some(farmer), true)?;
     farm.update_lp_points(now_ts, Some(farmer), true)?;
     farm.begin_staking(now_ts, vault.gem_count, vault.rarity_points, farmer)?;
- //   ctx.accounts.transfer_fee()?;
- //   msg!("{} gems staked by {}", farmer.gems_staked, farmer.key());
+
+    //collect a fee for staking
+    // ctx.accounts.transfer_fee()?;
+
+    // msg!("{} gems staked by {}", farmer.gems_staked, farmer.key());
     Ok(())
 }

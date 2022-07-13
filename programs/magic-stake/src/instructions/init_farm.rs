@@ -1,7 +1,4 @@
-use crate::state::farm::LPType;
-use crate::state::loyalty_rewards::LPRateSchedule;
-use crate::state::{max_counts::MaxCounts, Farm, FarmConfig, RewardType};
-use crate::state::{FixedRateSchedule, LATEST_FARM_VERSION};
+use crate::state::*;
 use anchor_lang::prelude::*;
 // use anchor_lang::solana_program::{program::invoke, system_instruction};
 use anchor_spl::token::{Mint, Token, TokenAccount};

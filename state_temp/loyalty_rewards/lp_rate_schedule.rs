@@ -1,5 +1,5 @@
 use super::LPTierConfig;
-use crate::state::*;
+use crate::state::fixed_rewards::HeldTenure;
 use anchor_lang::prelude::*;
 use gem_common::{TryAdd, TryDiv, TryMul, TrySub};
 

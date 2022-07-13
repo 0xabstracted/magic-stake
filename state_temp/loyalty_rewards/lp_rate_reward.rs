@@ -1,4 +1,6 @@
-use crate::state::*;
+use crate::state::LPRateConfig;
+use crate::state::farmer::FarmerLPRateReward;
+use crate::state::{loyalty_rewards::lp_rate_schedule::*, FarmerLPPoints, TimeTracker};
 use anchor_lang::prelude::*;
 use gem_common::{TryAdd, TrySub};
 
