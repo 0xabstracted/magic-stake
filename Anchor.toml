@@ -1,8 +1,8 @@
 [features]
 seeds = false
 [programs.devnet]
-gem_bank = "8K3TQQeez48mLYNt5fwgSdoPUqEZgeK7QZHxwRdnuExv"
-magic_stake = "5P5uaYkKvGAr7EotZXxHQondtdzXZXBFG5vwXDiHjyzh"
+gem_bank = "F4SDKmdyr6pzESeRuew4CkWj2qpTZ1xbn6o7Bvsa9297"
+magic_stake = "CMftun186ypSsjsZM8eVfDA7AsPZLoScWpTEYBvCzZVQ"
 
 [registry]
 url = "https://anchor.projectserum.com"

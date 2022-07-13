@@ -110,13 +110,13 @@ pub fn handler(
     _farm_treasury: Pubkey,
 ) -> Result<()> {
     //manually verify treasury
-    let (pk, _bump) = Pubkey::find_program_address(
-        &[b"treasury".as_ref(), ctx.accounts.farm.key().as_ref()],
-        ctx.program_id,
-    );
-    if _farm_treasury.key() != pk {
-        return Err(error!(ErrorCode::InvalidParameter));
-    }
+    // let (pk, _bump) = Pubkey::find_program_address(
+    //     &[b"treasury".as_ref(), ctx.accounts.farm.key().as_ref()],
+    //     ctx.program_id,
+    // );
+    // if _farm_treasury.key() != pk {
+    //     return Err(error!(ErrorCode::InvalidParameter));
+    // }
 
     if farm_config.unstaking_fee_percent > 100 {
         return Err(error!(ErrorCode::InvalidUnstakingFee));

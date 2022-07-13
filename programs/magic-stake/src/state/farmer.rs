@@ -12,7 +12,7 @@ pub enum FarmerState {
     PendingCooldown,
 }
 
-#[proc_macros::assert_size(712)] // +4 to make it /8
+#[proc_macros::assert_size(aligns, 712)] // +4 to make it /8
 #[repr(C)]
 #[account]
 #[derive(Debug)]
