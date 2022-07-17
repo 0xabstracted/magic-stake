@@ -1,4 +1,6 @@
-use crate::state::*;
+use crate::state::LPRateConfig;
+use crate::state::farmer::FarmerLPRateReward;
+use crate::state::{loyalty_rewards::lp_rate_schedule::*, FarmerLPPoints, TimeTracker};
 use anchor_lang::prelude::*;
 use gem_common::{TryAdd, TrySub};
 
@@ -30,7 +32,7 @@ impl LPRateReward {
         times.reward_end_ts = now_ts.try_add(lp_duration_sec)?;
 
         self.lp_schedule = lp_schedule;
-        msg!("recorded new lp of for {} sec, schedule: {:?}", lp_duration_sec, lp_schedule);
+        msg!("start_lp \t recorded new lp of for {} sec, schedule: {:?}", lp_duration_sec, lp_schedule);
         Ok(())
     }
 

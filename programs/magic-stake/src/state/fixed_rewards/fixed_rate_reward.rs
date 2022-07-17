@@ -40,7 +40,7 @@ impl FixedRateReward {
 
         funds.total_funded.try_add_assign(amount)?;
         self.schedule = schedule;
-        msg!("recorded new funding of {} for {} sec, schedule: {:?}", amount, duration_sec, schedule);
+        msg!("fund_reward \t recorded new funding of {} for {} sec, schedule: {:?}", amount, duration_sec, schedule);
         Ok(())
     }
 
@@ -53,7 +53,7 @@ impl FixedRateReward {
         let refund_amount = funds.pending_amount()?.try_sub(self.reserved_amount)?;
         funds.total_refunded.try_add_assign(refund_amount)?;
         times.end_reward(now_ts)?;
-        msg!("prepared a total refund amount of {} now_ts{}", refund_amount, now_ts);
+        msg!("cancel_reward \t prepared a total refund amount of {} now_ts{}", refund_amount, now_ts);
         Ok(refund_amount)
     }
 
@@ -92,7 +92,12 @@ impl FixedRateReward {
                 )?;
             }
         }
-        msg!("newly_accrued_reward {} now_ts{} funds{:?} times{:?} farmer_rarity_points_staked{} farmer_reward{:?}", newly_accrued_reward, now_ts, funds, times, farmer_rarity_points_staked, farmer_reward);
+        msg!("update_accrued_reward \newly_accrued_reward {}", newly_accrued_reward);
+        msg!("now_ts {}", now_ts);
+        msg!("funds {:?}", funds);
+        msg!("times {:?}", times);
+        msg!("farmer_rarity_points_staked {}", farmer_rarity_points_staked);
+        msg!("update_accrued_reward \t farmer_reward.fixed_rate {:?}", farmer_reward.fixed_rate);
         Ok(())
     }
 
@@ -120,14 +125,16 @@ impl FixedRateReward {
         if reserve_amount > funds.pending_amount()? {
             return Err(error!(ErrorCode::RewardUnderfunded));
         }
-
+        msg!("enroll_farmer \t reserve_amount:{}",reserve_amount);
         //update farmer
         farmer_reward.fixed_rate.last_updated_ts = now_ts;
         farmer_reward.fixed_rate.promised_schedule = self.schedule;
         farmer_reward.fixed_rate.promised_duration = remaining_duration;
+        msg!("farmer_reward.fixed_rate:{:?}",farmer_reward.fixed_rate);
 
         //update farm
         self.reserved_amount.try_add_assign(reserve_amount)?;
+        msg!("enroll_farmer \t self.reserved_amount:{}",self.reserved_amount);
         Ok(())
     }
 
@@ -142,6 +149,8 @@ impl FixedRateReward {
         let voided_reward = farmer_reward
             .fixed_rate
             .voided_reward(farmer_rarity_points_staked)?;
+            msg!("graduate_farmer \t voided_reward:{}",voided_reward);
+        
         self.reserved_amount.try_sub_assign(voided_reward)?;
         farmer_reward.fixed_rate = FarmerFixedRateReward::default();
         // msg!("graduated farmer on {}", now_ts);

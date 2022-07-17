@@ -309,7 +309,7 @@ impl FixedRateReward {
         let newly_accrued_reward = farmer_reward
             .fixed_rate
             .newly_accrued_reward(now_ts, farmer_rarity_points_staked)?;
-
+        msg!("newly_accrued_reward: {}, farmer_rarity_points_staked: {} funds.total_accrued_to_stakers: {} self.reserved_amount: {}", newly_accrued_reward, farmer_rarity_points_staked, funds.total_accrued_to_stakers, self.reserved_amount);
         // update farm (move amount from reserved to accrued)
         funds
             .total_accrued_to_stakers
@@ -324,7 +324,7 @@ impl FixedRateReward {
         {
             let original_staking_start =
                 self.graduate_farmer(farmer_rarity_points_staked, farmer_reward)?;
-
+            msg!("original_staking_start:{}, farmer_reward:{:?}, times:{:?}, funds:{:?}", original_staking_start, farmer_reward, times, funds);
             // if desired, we roll them forward with original staking time
             // why would it not be desired?
             //   one scenario is where there isn't sufficient funding to enroll them,
@@ -341,7 +341,7 @@ impl FixedRateReward {
             }
         }
 
-        // msg!("updated reward as of {}", now_ts);
+        msg!("updated reward as of {}", now_ts);
         Ok(())
     }
 

@@ -50,7 +50,9 @@ impl FarmerLPRateReward {
     pub fn voided_lp(&self, rarity_points: u64) -> Result<u64> {
         let start_from = self.time_from_staking_to_update()?;
         let end_at = self.end_schedule_ts()?.try_sub(self.lp_begin_staking_ts)?;
-
+        msg!("voided_lp \t start_from:{}",start_from);
+        msg!("voided_lp \t end_at:{}",end_at);
+        
         self.lp_promised_schedule
             .lp_reward_amount(start_from, end_at, rarity_points)
     }
@@ -62,7 +64,9 @@ impl FarmerLPRateReward {
         let end_at = self
             .lp_upper_bound(now_ts)?
             .try_sub(self.lp_begin_staking_ts)?;
-
+            msg!("newly_accrued_lp \t start_from:{}",start_from);
+            msg!("newly_accrued_lp \t end_at:{}",end_at);
+            
         self.lp_promised_schedule
             .lp_reward_amount(start_from, end_at, rarity_points)
     }

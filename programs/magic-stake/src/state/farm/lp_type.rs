@@ -4,5 +4,5 @@ use anchor_lang::prelude::*;
 #[repr(C)]
 #[derive(Debug, Copy, Clone, AnchorDeserialize, AnchorSerialize, PartialEq)]
 pub enum LPType {
-    RESPECT,
+    Respect,
 }

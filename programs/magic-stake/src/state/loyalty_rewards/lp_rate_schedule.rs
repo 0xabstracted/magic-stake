@@ -1,5 +1,5 @@
 use super::LPTierConfig;
-use crate::state::*;
+use crate::state::fixed_rewards::HeldTenure;
 use anchor_lang::prelude::*;
 use gem_common::{TryAdd, TryDiv, TryMul, TrySub};
 
@@ -117,6 +117,8 @@ impl LPRateSchedule {
         rarity_points: u64,
     ) -> Result<u64> {
         let per_rarity_point = self.lp_reward_per_rarity_point(start_from, end_at)?;
+        msg!("lp_reward_amount \t rarity_points:{}",rarity_points);
+        msg!("per_rarity_point:{}",per_rarity_point);
         rarity_points
             .try_mul(per_rarity_point)?
             .try_div(self.lp_denominator)

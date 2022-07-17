@@ -127,32 +127,22 @@ impl Farm {
     ) -> Result<()> {
         // reward_a
         let (farmer_rarity_points_staked, farmer_reward_a) = match farmer {
-            Some(ref mut farmer) => (
+            Some(ref mut farmer) => {        
+                (
                 Some(farmer.rarity_points_staked),
                 Some(&mut farmer.reward_a),
-            ),
-            None => (None, None),
+            )},
+            None => {
+                msg!("No Farmer ");
+                (None, None)},
         };
-
         self.reward_a.update_accrued_reward_by_type(
             now_ts,
             self.rarity_points_staked,
             farmer_rarity_points_staked,
             farmer_reward_a,
             reenroll,
-        ) //?;
-
-        // let farmer_reward_b = match farmer {
-        //     Some(ref mut farmer) => Some(&mut farmer.reward_b),
-        //     None => None,
-        // };
-        // self.reward_b.update_accrued_reward_by_type(
-        //     now_ts,
-        //     self.rarity_points_staked,
-        //     farmer_points_staked,
-        //     farmer_reward_b,
-        //     reenroll,
-        // )
+        ) 
     }
     
     pub fn start_lp_by_type(&mut self, now_ts: u64, lp_rate_config: Option<LPRateConfig>,) -> Result<()> {
@@ -225,7 +215,7 @@ impl Farm {
         }
 
         if self.reward_a.reward_type == RewardType::Probable {
-            self.reward_a.probable_rate.enroll_probable_farmer(
+            self.reward_a.probable_rate_reward.enroll_probable_farmer(
                 now_ts,
                 &mut self.reward_a.times,
                 &mut self.reward_a.funds,
@@ -234,7 +224,7 @@ impl Farm {
                 None,
             )?;
         }
-        if self.lp_points.lp_type == LPType::RESPECT {
+        if self.lp_points.lp_type == LPType::Respect {
             self.lp_points.lp_rate.enroll_lp_farmer(
                 now_ts,
                 &mut self.lp_points.times,
@@ -267,12 +257,12 @@ impl Farm {
                         .graduate_farmer(farmer.rarity_points_staked, &mut farmer.reward_a)?;
                 }
                 if self.reward_a.reward_type == RewardType::Probable {
-                    self.reward_a.probable_rate.graduate_probable_farmer(
+                    self.reward_a.probable_rate_reward.graduate_probable_farmer(
                         farmer.rarity_points_staked,
                         &mut farmer.reward_a,
                     )?;
                 }
-                if self.lp_points.lp_type == LPType::RESPECT {
+                if self.lp_points.lp_type == LPType::Respect {
                     self.lp_points
                         .lp_rate
                         .graduate_lp_farmer(farmer.rarity_points_staked, &mut farmer.lp_points)?;
@@ -343,11 +333,11 @@ impl Farm {
             // graduate farmer with previous rarity points count
             let original_begin_staking_ts = self
                 .reward_a
-                .probable_rate
+                .probable_rate_reward
                 .graduate_probable_farmer(previous_rarity_points, &mut farmer.reward_a)?;
 
             // re-enroll with NEW rarity points count
-            self.reward_a.probable_rate.enroll_probable_farmer(
+            self.reward_a.probable_rate_reward.enroll_probable_farmer(
                 now_ts,
                 &mut self.reward_a.times,
                 &mut self.reward_a.funds,
@@ -356,7 +346,7 @@ impl Farm {
                 Some(original_begin_staking_ts),
             )?;
         }
-        if self.lp_points.lp_type == LPType::RESPECT {
+        if self.lp_points.lp_type == LPType::Respect {
             // graduate farmer with previous rarity points count
             let original_begin_staking_ts = self
                 .lp_points

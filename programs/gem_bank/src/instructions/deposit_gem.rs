@@ -121,7 +121,7 @@ fn assert_valid_whitelist_proof<'info>(
         address_to_whitelist.as_ref(),
     ];
     let (whitelist_addr, _bump) = Pubkey::find_program_address(seed, program_id);
-    msg!("mint whitelisted: {}, whitelist_addr {} , whitelist_proof.key(){} ", address_to_whitelist, whitelist_addr, whitelist_proof.key());
+    //msg!("mint whitelisted: {}, whitelist_addr {} , whitelist_proof.key(){} ", address_to_whitelist, whitelist_addr, whitelist_proof.key());
 
     // we can't use an assert_eq statement, we want to catch this error and continue along to creator testing
     if whitelist_addr != whitelist_proof.key() {
@@ -144,7 +144,7 @@ fn assert_whitelisted(ctx: &Context<DepositGem>) -> Result<()> {
     // whitelisted mint is always the 1st optional account
     // this is because it's applicable to both NFTs and standard fungible tokens
     let mint_whitelist_proof_info = next_account_info(remaining_accs)?;
-    msg!("mint whitelisted: {}, going ahead, bank.whitelisted_mints {}, bank.whitelisted_creators {} ", &mint.key(), bank.whitelisted_mints, bank.whitelisted_creators);
+   // msg!("mint whitelisted: {}, going ahead, bank.whitelisted_mints {}, bank.whitelisted_creators {} mint_whitelist_proof_info.key(){}", &mint.key(), bank.whitelisted_mints, bank.whitelisted_creators, mint_whitelist_proof_info.key());
 
     // attempt to verify based on mint
     if bank.whitelisted_mints > 0 {
@@ -155,7 +155,7 @@ fn assert_whitelisted(ctx: &Context<DepositGem>) -> Result<()> {
             ctx.program_id,
             WhitelistType::MINT,
         ) {
-            msg!("mint whitelisted: {}, going ahead", &mint.key());
+           // msg!("mint whitelisted: {}, going ahead", &mint.key());
             return Ok(());
         }
     }
@@ -165,7 +165,7 @@ fn assert_whitelisted(ctx: &Context<DepositGem>) -> Result<()> {
         // 2 additional accounts are expected - metadata and creator whitelist proof
         let metadata_info = next_account_info(remaining_accs)?;
         let creator_whitelist_proof_info = next_account_info(remaining_accs)?;
-
+       // msg!("metadata_info.key() {}, creator_whitelist_proof_info.key() {}", metadata_info.key(), creator_whitelist_proof_info.key());
         // verify metadata is legit
         let metadata = assert_valid_metadata(metadata_info, &mint.key())?;
 

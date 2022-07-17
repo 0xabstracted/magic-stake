@@ -1,7 +1,7 @@
 use anchor_lang::prelude::*;
 use gem_common::*;
 
-use crate::{number128::Number128, state::*};
+use crate::{number128::*, state::*};
 
 #[proc_macros::assert_size(16)]
 #[repr(C)]

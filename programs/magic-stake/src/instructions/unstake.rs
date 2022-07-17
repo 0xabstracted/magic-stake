@@ -1,25 +1,22 @@
-use crate::instructions::FEE_WALLET;
 use anchor_lang::{
     prelude::*,
-//    solana_program::{program::invoke, system_instruction},
 };
-use anchor_spl::token::{self, Token, Transfer};
+use anchor_spl::token::{self, Token, Transfer, TokenAccount};
+
 use gem_bank::{
     self,
     cpi::accounts::SetVaultLock,
     program::GemBank,
     state::{Bank, Vault},
 };
-use gem_common::{now_ts, TryDiv};
+use gem_common::{now_ts, TrySub, TryDiv, TryMul};
 use crate::state::{Farm, FarmerState};
-use std::str::FromStr;
 
 use crate::state::Farmer;
 
-// const FEE_LAMPORTS: u64 = 1_000_000; // 0.002 SOL per entire unstake op (charged twice, so 0.001 2x)
 
 #[derive(Accounts)]
-#[instruction(bump_auth: u8, bump_treasury: u8, bump_farmer: u8)]
+#[instruction(bump_auth: u8, bump_token_treasury: u8, bump_farmer: u8)]
 pub struct Unstake<'info> {
     // farm
     #[account(mut, has_one = farm_authority, has_one = farm_treasury, has_one = bank)]
@@ -28,8 +25,16 @@ pub struct Unstake<'info> {
     #[account(seeds = [farm.key().as_ref()], bump = bump_auth)]
     pub farm_authority: AccountInfo<'info>,
     /// CHECK:
-    #[account(mut, seeds = [b"treasury".as_ref(), farm.key().as_ref()], bump = bump_treasury)]
+   // #[account(mut, seeds = [b"treasury".as_ref(), farm.key().as_ref()], bump = bump_treasury)]
     pub farm_treasury: AccountInfo<'info>,
+    #[account( seeds = [
+        b"token_treasury".as_ref(),
+        farm.key().as_ref(),
+        farm.reward_a.reward_mint.as_ref(),
+    ],
+    bump = bump_token_treasury,
+    )]
+    pub farm_treasury_token: Box<Account<'info, TokenAccount>>,
 
     // farmer
     #[account(mut, has_one = farm, has_one = identity, has_one = vault,
@@ -49,11 +54,6 @@ pub struct Unstake<'info> {
     #[account(mut)]
     pub vault: Box<Account<'info, Vault>>,
     pub gem_bank: Program<'info, GemBank>,
-
-    //misc
-    /// CHECK:
-    #[account(mut, address = Pubkey::from_str(FEE_WALLET).unwrap())]
-    pub fee_acc: AccountInfo<'info>,
     pub token_program: Program<'info, Token>,
     pub system_program: Program<'info, System>,
 }
@@ -69,31 +69,6 @@ impl<'info> Unstake<'info> {
             },
         )
     }
-    /* 
-    fn pay_treasury(&self, lamports: u64) -> Result<()> {
-        invoke(
-            &system_instruction::transfer(self.identity.key, self.farm_treasury.key, lamports),
-            &[
-                self.identity.to_account_info(),
-                self.farm_treasury.clone(),
-                self.system_program.to_account_info(),
-            ],
-        )
-        .map_err(Into::into)
-    }
-
-    fn transfer_fee(&self) -> Result<()> {
-        invoke(
-            &system_instruction::transfer(self.identity.key, self.fee_acc.key, FEE_LAMPORTS),
-            &[
-                self.identity.to_account_info(),
-                self.fee_acc.clone(),
-                self.system_program.to_account_info(),
-            ],
-        )
-        .map_err(Into::into)
-    }
-    */
     fn pay_tokens_treasury_ctx(&self) -> CpiContext<'_,'_,'_,'info, Transfer<'info>> {
         CpiContext::new(
             self.token_program.to_account_info(), 
@@ -108,17 +83,7 @@ impl<'info> Unstake<'info> {
 
 pub fn handler(ctx: Context<Unstake>, skip_rewards: bool) -> Result<()> {
     // collect any unstaking fee
-    let farm = &ctx.accounts.farm;
-    if ctx.accounts.farmer.state == FarmerState::Staked && farm.config.unstaking_fee_percent > 0 && farm.config.unstaking_fee_percent < 100 {
-        //ctx.accounts.pay_treasury(farm.config.unstaking_fee_lamp)?
-        farm.config.unstaking_fee_percent.try_div(100)?;
-        token::transfer(
-            ctx.accounts
-            .pay_tokens_treasury_ctx()
-            .with_signer(&[&ctx.accounts.farm.farm_seeds()]),
-            farm.config.unstaking_fee_percent,
-        )?;
-    } 
+     
     let farm = &mut ctx.accounts.farm;
     let farmer = &mut ctx.accounts.farmer;
     let now_ts = now_ts()?;
@@ -127,11 +92,28 @@ pub fn handler(ctx: Context<Unstake>, skip_rewards: bool) -> Result<()> {
     // at least this lets them get their assets out
     if !skip_rewards {
         farm.update_rewards(now_ts, Some(farmer), false)?;
+        farm.update_lp_points(now_ts, Some(farmer), false)?;
     }
-
     // end staking (will cycle through state on repeated calls)
     farm.end_staking(now_ts, farmer)?;
+    let farm = &ctx.accounts.farm;
+    let farmer = &ctx.accounts.farmer;
 
+    if farmer.state == FarmerState::Unstaked && farm.config.unstaking_fee_percent > 0 && farm.config.unstaking_fee_percent < 100 {
+       let unstake_fee_tokens = farmer.reward_a.accrued_reward.try_mul(farm.config.unstaking_fee_percent.try_div(100)?)?;
+       
+       token::transfer(
+            ctx.accounts
+            .pay_tokens_treasury_ctx()
+            .with_signer(&[&ctx.accounts.farm.farm_seeds()]),
+            unstake_fee_tokens,
+        )?;
+        let farmer = &mut ctx.accounts.farmer;
+        farmer.reward_a.accrued_reward.try_sub_assign(unstake_fee_tokens)?; 
+    
+    }
+    let farmer = &ctx.accounts.farmer;
+      
     if farmer.state == FarmerState::Unstaked {
         // unlock the vault so the user can withdraw their gems
         gem_bank::cpi::set_vault_lock(
@@ -142,6 +124,5 @@ pub fn handler(ctx: Context<Unstake>, skip_rewards: bool) -> Result<()> {
         )?;
     }
     
-    //ctx.accounts.transfer_fee()?;
     Ok(())
 }

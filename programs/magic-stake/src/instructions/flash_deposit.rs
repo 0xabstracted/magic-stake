@@ -11,8 +11,8 @@ use gem_bank::{
     state::{Bank, Vault},
 };
 use gem_common::now_ts;
-use std::str::FromStr;
-use crate::instructions::FEE_WALLET;
+// use std::str::FromStr;
+// use crate::instructions::FEE_WALLET;
 // const FEE_LAMPORTS: u64 = 2_000_000; // 0.002 SOL per stake/unstake
 // const FD_FEE_LAMPORTS: u64 = 1_000_000; // half of that for FDs
 
@@ -61,9 +61,6 @@ pub struct FlashDeposit<'info> {
     pub system_program: Program<'info, System>,
     pub rent: Sysvar<'info, Rent>,
     pub gem_bank: Program<'info, GemBank>,
-    /// CHECK:
-    #[account(mut, address = Pubkey::from_str(FEE_WALLET).unwrap())]
-    pub fee_acc: AccountInfo<'info>,
     //
     // remaining accounts could be passed, in this order:
     // - mint_whitelist_proof
@@ -102,19 +99,6 @@ impl<'info> FlashDeposit<'info> {
             },
         )
     }
-    /* 
-    fn transfer_fee(&self, fee: u64) -> Result<()> {
-        invoke(
-            &system_instruction::transfer(self.identity.key, self.fee_acc.key, fee),
-            &[
-                self.identity.to_account_info(),
-                self.fee_acc.clone(),
-                self.system_program.to_account_info(),
-            ],
-        )
-        .map_err(Into::into)
-    }
-    */
 }
 
 pub fn handler<'a, 'b, 'c, 'info>(
@@ -147,7 +131,13 @@ pub fn handler<'a, 'b, 'c, 'info>(
     let farmer = &mut ctx.accounts.farmer;
     let farm = &mut ctx.accounts.farm;
     let now_ts = now_ts()?;
-    farm.update_rewards(now_ts, Some(farmer), true)?;
+        farm.update_rewards(now_ts, Some(farmer), true)?;
+
+        farm.update_lp_points(now_ts, Some(farmer), true)?;
+    msg!("handler \t farmer.gems_staked:{}", farmer.gems_staked);
+    msg!("handler \t farmer.reward_a.fixed_rate:{:?}", farmer.reward_a.fixed_rate);
+    msg!("handler \t farmer.lp_points.lp_rate:{:?}", farmer.lp_points.lp_rate);
+    
     ctx.accounts.vault.reload()?;
     if farmer.gems_staked == 0 {
         farm.begin_staking(
@@ -156,7 +146,6 @@ pub fn handler<'a, 'b, 'c, 'info>(
             ctx.accounts.vault.rarity_points,
             farmer,
         )?;
-        //ctx.accounts.transfer_fee(FEE_LAMPORTS)?;
     } else {
         let extra_rarity = calc_rarity_points(&ctx.accounts.gem_rarity, amount)?;
         farm.stake_extra_gems(
@@ -167,8 +156,7 @@ pub fn handler<'a, 'b, 'c, 'info>(
             extra_rarity,
             farmer,
         )?;
-        // ctx.accounts.transfer_fee(FD_FEE_LAMPORTS)?;
     } 
-    msg!("{} extra gems staked for {}", amount, farmer.key());
+    //msg!("{} extra gems staked for {}", amount, farmer.key());
     Ok(())
 }

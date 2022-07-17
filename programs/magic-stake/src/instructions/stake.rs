@@ -9,10 +9,6 @@ use gem_bank::{
 };
 use gem_common::now_ts;
 use gem_common::errors::ErrorCode;
-// use anchor_lang::solana_program::{program::invoke, system_instruction};
-use crate::instructions::FEE_WALLET;
-use std::str::FromStr;
-// const FEE_LAMPORTS: u64 = 2_000_000; // 0.002 SOL per stake/unstake
 
 
 #[derive(Accounts)]
@@ -43,10 +39,6 @@ pub struct Stake<'info> {
     #[account(mut)]
     pub vault: Box<Account<'info, Vault>>,
     pub gem_bank: Program<'info, GemBank>,
-
-    /// CHECK:
-    #[account(mut, address = Pubkey::from_str(FEE_WALLET).unwrap())]
-    pub fee_acc: AccountInfo<'info>,
     pub system_program: Program<'info, System>,
 }
 
@@ -61,19 +53,6 @@ impl<'info> Stake<'info> {
             },
         )
     }
-    /* 
-    fn transfer_fee(&self) -> Result<()> {
-        invoke(
-            &system_instruction::transfer(self.identity.key, self.fee_acc.key, FEE_LAMPORTS),
-            &[
-                self.identity.to_account_info(),
-                self.fee_acc.clone(),
-                self.system_program.to_account_info(),
-            ],
-        )
-        .map_err(Into::into)
-    }
-    */
 }
 
 pub fn handler(ctx: Context<Stake>) -> Result<()> {

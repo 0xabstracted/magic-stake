@@ -117,6 +117,8 @@ impl FixedRateSchedule {
 
     pub fn reward_amount(&self, start_from: u64, end_at: u64, rarity_points: u64) -> Result<u64> {
         let per_rarity_point = self.reward_per_rarity_point(start_from, end_at)?;
+        msg!("reward_amount \t rarity_points:{}",rarity_points);
+        msg!("per_rarity_point:{}",per_rarity_point);
         rarity_points
             .try_mul(per_rarity_point)?
             .try_div(self.denominator)

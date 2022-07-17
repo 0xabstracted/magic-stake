@@ -12,30 +12,63 @@ declare_id!("CMftun186ypSsjsZM8eVfDA7AsPZLoScWpTEYBvCzZVQ");
 #[program]
 pub mod magic_stake {
     use super::*;
-    pub fn init_farm(
-        ctx: Context<InitFarm>,
+    // pub fn init_farm(
+    //     ctx: Context<InitFarm>,
+    //     bump_auth: u8,
+    //     _bump_treasury: u8,
+    //     reward_type_a: RewardType,
+    //     //reward_type_b: RewardType,
+    //     lp_type: LPType,
+    //     farm_config: FarmConfig,
+    //     max_counts: Option<MaxCounts>,
+    //     _farm_treasury: Pubkey,
+    // ) -> Result<()> {
+    //     msg!("init farm");
+    //     instructions::init_farm::handler(
+    //         ctx,
+    //         bump_auth,
+    //         reward_type_a,
+    //         //reward_type_b,
+    //         lp_type,
+    //         farm_config,
+    //         max_counts,
+    //         _farm_treasury,
+    //     )
+    // }
+    pub fn init_fixed_farm(
+        ctx: Context<InitFixedFarm>,
         bump_auth: u8,
         _bump_treasury: u8,
-        reward_type_a: RewardType,
-        //reward_type_b: RewardType,
         lp_type: LPType,
         farm_config: FarmConfig,
         max_counts: Option<MaxCounts>,
-        _farm_treasury: Pubkey,
     ) -> Result<()> {
-        msg!("init farm");
-        instructions::init_farm::handler(
+        msg!("init fixed farm");
+        instructions::init_fixed_farm::handler(
             ctx,
             bump_auth,
-            reward_type_a,
-            //reward_type_b,
             lp_type,
             farm_config,
             max_counts,
-            _farm_treasury,
         )
     }
-
+    pub fn init_probable_farm(
+        ctx: Context<InitProbableFarm>,
+        bump_auth: u8,
+        _bump_treasury: u8,
+        lp_type: LPType,
+        farm_config: FarmConfig,
+        max_counts: Option<MaxCounts>,
+    ) -> Result<()> {
+        msg!("init farm");
+        instructions::init_probable_farm::handler(
+            ctx,
+            bump_auth,
+            lp_type,
+            farm_config,
+            max_counts,
+        )
+    }
     pub fn update_farm(
         ctx: Context<UpdateFarm>,
         config: Option<FarmConfig>,
@@ -75,11 +108,19 @@ pub mod magic_stake {
 
     // --------------------------------------- farmer ops
 
-    pub fn init_farmer(ctx: Context<InitFarmer>) -> Result<()> {
+    // pub fn init_farmer(ctx: Context<InitFarmer>) -> Result<()> {
+    //     msg!("init farmer");
+    //     instructions::init_farmer::handler(ctx)
+    // }
+    pub fn init_fixed_farmer(ctx: Context<InitFixedFarmer>) -> Result<()> {
         msg!("init farmer");
-        instructions::init_farmer::handler(ctx)
+        instructions::init_fixed_farmer::handler(ctx)
     }
-
+    pub fn init_probable_farmer(ctx: Context<InitProbableFarmer>) -> Result<()> {
+        msg!("init farmer");
+        instructions::init_probable_farmer::handler(ctx)
+    }
+    
     pub fn stake(ctx: Context<Stake>, _bump_auth: u8, _bump_farmer: u8) -> Result<()> {
         msg!("stake");
         instructions::stake::handler(ctx)

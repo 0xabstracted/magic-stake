@@ -6,8 +6,12 @@ pub mod claim;
 pub mod deauthorize_funder;
 pub mod flash_deposit;
 pub mod fund_reward;
-pub mod init_farm;
-pub mod init_farmer;
+// pub mod init_farm;
+pub mod init_fixed_farm;
+pub mod init_probable_farm;
+// pub mod init_farmer;
+pub mod init_fixed_farmer;
+pub mod init_probable_farmer;
 pub mod lock_reward;
 pub mod refresh_farmer;
 pub mod refresh_farmer_signed;
@@ -25,8 +29,12 @@ pub use claim::*;
 pub use deauthorize_funder::*;
 pub use flash_deposit::*;
 pub use fund_reward::*;
-pub use init_farm::*;
-pub use init_farmer::*;
+// pub use init_farm::*;
+pub use init_fixed_farm::*;
+pub use init_probable_farm::*;
+// pub use init_farmer::*;
+pub use init_fixed_farmer::*;
+pub use init_probable_farmer::*;
 pub use lock_reward::*;
 pub use refresh_farmer::*;
 pub use refresh_farmer_signed::*;
@@ -35,7 +43,6 @@ pub use stake::*;
 pub use treasury_payout::*;
 pub use unstake::*;
 pub use update_farm::*;
-
 // have to duplicate or this won't show up in IDL
 use anchor_lang::prelude::*;
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, Debug, Default, PartialEq)]

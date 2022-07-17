@@ -1,7 +1,4 @@
-use crate::state::{
-    farmer::farmer_probable_rate_reward::*, probable_rewards::probable_rate_schedule::*,
-    FarmerReward, FundsTracker, ProbableRateConfig, TimeTracker,
-};
+use crate::state::*;
 use anchor_lang::prelude::*;
 use gem_common::errors::ErrorCode;
 use gem_common::{TryAdd, TrySub};
@@ -63,7 +60,7 @@ impl ProbableRateReward {
             .probable_rate
             .newly_accrued_probable_reward(now_ts, farmer_rarity_points_staked)?;
         funds
-            .total_accured_to_stakers
+            .total_accrued_to_stakers
             .try_add_assign(newly_accrued_reward)?;
         self.reserved_amount.try_add_assign(newly_accrued_reward)?;
         farmer_reward.update_probable_reward(now_ts, newly_accrued_reward)?;

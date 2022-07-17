@@ -83,6 +83,8 @@ pub fn handler(
             .with_signer(&[&ctx.accounts.farm.farm_seeds()]),
         amount,
     )?;
+    msg!("fixed_rate_config {:?}", fixed_rate_config);
+    msg!("probable_rate_config {:?}", probable_rate_config);
     msg!(
         "{} reward tokens deposited into {} pot",
         amount,

@@ -31,7 +31,7 @@ impl FarmLPPoints {
             return Err(error!(ErrorCode::RewardLocked));
         }
         match self.lp_type {
-        LPType::RESPECT => self.lp_rate.start_lp(
+        LPType::Respect => self.lp_rate.start_lp(
             now_ts,
             &mut self.times,
             lp_rate_config.unwrap(),
@@ -43,7 +43,7 @@ impl FarmLPPoints {
             return Err(error!(ErrorCode::LPLocked));
         }
         match self.lp_type {
-            LPType::RESPECT => self.lp_rate.cancel_lp_points(now_ts, &mut self.times),
+            LPType::Respect => self.lp_rate.cancel_lp_points(now_ts, &mut self.times),
         }
     }
 
@@ -56,7 +56,7 @@ impl FarmLPPoints {
         reenroll: bool,
     ) -> Result<()> {
         match self.lp_type {
-            LPType::RESPECT => {
+            LPType::Respect => {
                 if farmer_lp.is_none() {
                     return Ok(());
                 }

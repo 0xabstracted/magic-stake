@@ -66,7 +66,7 @@ pub fn handler(ctx: Context<AddToWhitelist>, whitelist_type: u8) -> Result<()> {
     proof.reset_type(new_whitelist);
     proof.whitelisted_address = ctx.accounts.address_to_whitelist.key();
     proof.bank = ctx.accounts.bank.key();
-    msg!("proof.whitelist_type: {}, proof.whitelisted_address {}, new_whitelist {:?} ", proof.whitelist_type, proof.whitelisted_address, new_whitelist);
+    //msg!("proof.whitelist_type: {}, proof.whitelisted_address {}, new_whitelist {:?} ", proof.whitelist_type, proof.whitelisted_address, new_whitelist);
 
     let bank = &mut ctx.accounts.bank;
 
@@ -77,9 +77,9 @@ pub fn handler(ctx: Context<AddToWhitelist>, whitelist_type: u8) -> Result<()> {
         bank.whitelisted_mints.try_add_assign(1)?;
     }
 
-    msg!(
-        "{} added to whitelist",
-        &ctx.accounts.address_to_whitelist.key()
-    );
+    // msg!(
+    //     "{} added to whitelist",
+    //     &ctx.accounts.address_to_whitelist.key()
+    // );
     Ok(())
 }

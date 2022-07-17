@@ -22,7 +22,7 @@ pub struct FarmReward {
     /// Only one of these three reward types is configured per reward
     pub fixed_rate_reward: FixedRateReward, //128
     //    pub variable_rate: VariableRateReward, //72
-    pub probable_rate: ProbableRateReward, // 160
+    pub probable_rate_reward: ProbableRateReward, // 160
     pub funds: FundsTracker,               //24
     pub times: TimeTracker,                //24
     _reserved: [u8; 32],                   //32
@@ -66,7 +66,7 @@ impl FarmReward {
             //     &mut self.funds,
             //     variable_rate_config.unwrap(),
             // ),
-            RewardType::Probable => self.probable_rate.fund_probable_reward(
+            RewardType::Probable => self.probable_rate_reward.fund_probable_reward(
                 now_ts,
                 &mut self.times,
                 &mut self.funds,
@@ -89,7 +89,7 @@ impl FarmReward {
             //         .cancel_reward(now_ts, &mut self.times, &mut self.funds)
             // }
             RewardType::Probable => {
-                self.probable_rate
+                self.probable_rate_reward
                     .cancel_probable_reward(now_ts, &mut self.times, &mut self.funds)
             }
         }
@@ -103,12 +103,15 @@ impl FarmReward {
         farmer_reward: Option<&mut FarmerReward>,
         reenroll: bool,
     ) -> Result<()> {
+
         match self.reward_type {
             RewardType::Fixed => {
                 // for fixed reward we only update if farmer reward is passed
                 if farmer_reward.is_none() {
+                    msg!("farmer_reward not present, no farmer");
                     return Ok(());
                 }
+                // msg!("FarmReward update_accrued_reward_by_type farmer_rarity_points_staked.unwrap(){}",farmer_rarity_points_staked.unwrap());
                 self.fixed_rate_reward.update_accrued_reward(
                     now_ts,
                     &mut self.times,
@@ -131,7 +134,7 @@ impl FarmReward {
                     return Ok(());
                 }
 
-                self.probable_rate.update_accrued_probable_reward(
+                self.probable_rate_reward.update_accrued_probable_reward(
                     now_ts,
                     &mut self.times,
                     &mut self.funds,

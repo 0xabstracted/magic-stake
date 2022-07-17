@@ -5,7 +5,7 @@ use anchor_lang::prelude::*;
 use gem_common::errors::ErrorCode;
 use gem_common::TryAdd;
 
-#[proc_macros::assert_size(712)]
+#[proc_macros::assert_size(680)]
 #[repr(C)]
 #[account]
 #[derive(Debug)]
@@ -24,7 +24,7 @@ pub struct Farmer {
     pub min_staking_end_ts: u64, //8
     /// this will be updated when they decide to unstake according to FarmConfig settings of Farm
     pub cooldown_end_ts: u64, //8
-    pub reward_a: FarmerReward, //384
+    pub reward_a: FarmerReward, //384 352
     //    pub reward_b: FarmerReward, //384
     pub lp_points: FarmerLPPoints, //160
     _reserved: [u8; 32],           //32
@@ -41,6 +41,11 @@ impl Farmer {
         self.state = FarmerState::Staked;
         let previous_gems_staked = self.gems_staked;
         let previous_rarity_points_staked = self.rarity_points_staked;
+        msg!("Farmer begin_staking \t previous_gems_staked:{}",previous_gems_staked);
+        msg!("Farmer begin_staking \t previous_rarity_points_staked:{}",previous_rarity_points_staked);
+        msg!("Farmer begin_staking \t gems_in_vault:{}",gems_in_vault);
+        msg!("Farmer begin_staking \t rarity_points_in_vault:{}",rarity_points_in_vault);
+        msg!("Farmer begin_staking \t min_staking_period_sec:{}",min_staking_period_sec);
         self.gems_staked = gems_in_vault;
         self.rarity_points_staked = rarity_points_in_vault;
         self.min_staking_end_ts = now_ts.try_add(min_staking_period_sec)?;
@@ -64,9 +69,11 @@ impl Farmer {
         self.gems_staked = 0; //no rewards will accrue during the cooldown period
         self.rarity_points_staked = 0;
         self.cooldown_end_ts = now_ts.try_add(cooldown_period_sec)?;
-
+        msg!("end_staking_begin_cooldown \t self.cooldown_end_ts:{}",self.cooldown_end_ts);
+        msg!("end_staking_begin_cooldown \t rarity_points_unstaked:{}",rarity_points_unstaked);
+        
         msg!(
-           "{} gems are cooling down {}",
+           "end_staking_begin_cooldown \t {} gems are cooling down {}",
              gems_unstaked,
              self.identity,
         );
@@ -82,10 +89,10 @@ impl Farmer {
         self.rarity_points_staked = 0;
         self.cooldown_end_ts = 0;
         self.min_staking_end_ts = 0;
-        // msg!(
-        //    "gems now unstaked and available for withdrawal for {}",
-        //      self.identity
-        // );
+        msg!(
+           "end_cooldown \t gems now unstaked, cooldown is done and available for withdrawal for {}",
+             self.identity
+        );
         Ok(())
     }
 
