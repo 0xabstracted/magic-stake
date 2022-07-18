@@ -123,4 +123,13 @@ pub enum ErrorCode {
     UnknownLPType, // 0x17ac,
     #[msg("LP locked")]
     LPLocked, // 0x17ad
+    #[msg("Not a valid Switchboard VRF account")]
+    InvalidSwitchboardVrfAccount,
+    #[msg("The max result must not exceed u64")]
+    MaxResultExceedsMaximum,
+    #[msg("Current round result is empty")]
+    EmptyCurrentRoundResult,
+    #[msg("Invalid authority account provided.")]
+    InvalidAuthorityError,
+
 }

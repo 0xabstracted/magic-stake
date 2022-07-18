@@ -2,10 +2,12 @@ use anchor_lang::prelude::*;
 pub mod instructions;
 pub mod number128;
 pub mod state;
+pub mod vrf_actions;
 
 use gem_bank::instructions::record_rarity_points::RarityConfig;
 use instructions::*;
 use state::*;
+use vrf_actions::*;
 
 declare_id!("CMftun186ypSsjsZM8eVfDA7AsPZLoScWpTEYBvCzZVQ");
 
@@ -227,5 +229,20 @@ pub mod magic_stake {
     ) -> Result<()> {
         msg!("add rarities to bank");
         instructions::add_rarities_to_bank::handler(ctx, rarity_configs)
+    }
+
+    #[access_control(ctx.accounts.validate(&ctx, &params))]
+    pub fn init_state(ctx: Context<InitState>, params: InitStateParams) -> Result<()> {
+        InitState::actuate(&ctx, &params)
+    }
+
+    #[access_control(ctx.accounts.validate(&ctx))]
+    pub fn update_result(ctx: Context<UpdateResult>) -> Result<()> {
+        UpdateResult::actuate(&ctx)
+    }
+
+    #[access_control(ctx.accounts.validate(&ctx, &params))]
+    pub fn request_result(ctx: Context<RequestResult>, params: RequestResultParams) -> Result<()> {
+        RequestResult::actuate(&ctx, &params)
     }
 }
