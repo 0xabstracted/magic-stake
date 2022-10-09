@@ -132,7 +132,7 @@ impl Farmer {
         now_ts: u64,
         cooldown_period_sec: u64,
     ) -> Result<(u64, u64)> {
-        if !self.can_end_cooldown(now_ts) {
+        if !self.can_end_cooldown_alpha(now_ts) {
             return Err(error!(ErrorCode::MinStakingNotPassed));
         }
 
@@ -154,7 +154,7 @@ impl Farmer {
     }
 
     pub fn end_cooldown_alpha(&mut self, now_ts: u64) -> Result<()> {
-        if self.can_end_staking(now_ts) {
+        if self.can_end_staking_alpha(now_ts) {
             return Err(error!(ErrorCode::CooldownNotPassed));
         }
         self.state = FarmerState::Unstaked;

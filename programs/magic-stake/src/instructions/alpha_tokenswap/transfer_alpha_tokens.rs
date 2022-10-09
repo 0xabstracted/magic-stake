@@ -28,18 +28,22 @@ pub struct TransferAlphaTokens <'info> {
     pub token_program: Program<'info, Token>,
 }
 
-pub fn handler(ctx: Context<TransferAlphaTokens>, amount: u64, bump_alpha_tokenswap:u8, bump_alpha_pot: u8) -> Result<()>{
+pub fn handler(ctx: Context<TransferAlphaTokens>, amount: u64, _bump_alpha_tokenswap:u8, _bump_alpha_pot: u8) -> Result<()>{
     let alpha_tokenswap_account_info = ctx.accounts.alpha_tokenswap.to_account_info();
     let alpha_creator = &ctx.accounts.alpha_creator;
+    let alpha_mint= &ctx.accounts.alpha_mint;
     if ctx.accounts.alpha_pot.amount < amount {
         return Err(ErrorCode::EmptySwapPot.into());
     }
 
     let (_, nonce) = Pubkey::find_program_address(
-        &[b"alpha_tokenswap".as_ref(), alpha_creator.key.as_ref()],
+        &[b"alpha_tokenswap".as_ref(), alpha_creator.key.as_ref(), alpha_mint.key().as_ref() ],
         ctx.program_id,
     );
-    let seeds = &[b"alpha_tokenswap".as_ref(), alpha_creator.key.as_ref(), &[nonce]];
+    let alpha_creator = &ctx.accounts.alpha_creator;
+
+    let alpha_mint= &ctx.accounts.alpha_mint.to_account_info();
+    let seeds = &[b"alpha_tokenswap".as_ref(), alpha_creator.key.as_ref(), alpha_mint.key.as_ref() , &[nonce]];
     let signer_seeds = &[&seeds[..]];
 
     token::transfer(
