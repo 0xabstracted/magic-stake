@@ -1865,16 +1865,16 @@
       ],
       "args": [
         {
-          "name": "amount",
-          "type": "u64"
-        },
-        {
           "name": "bumpAlphaTokenswap",
           "type": "u8"
         },
         {
           "name": "bumpAlphaPot",
           "type": "u8"
+        },
+        {
+          "name": "amount",
+          "type": "u64"
         }
       ]
     },

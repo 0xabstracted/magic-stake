@@ -311,7 +311,7 @@ pub mod magic_stake {
         instructions::create_alpha_tokenswap::handler(ctx, amount)
     }
 
-    pub fn transfer_alpha_tokens(ctx: Context<TransferAlphaTokens>, amount: u64, bump_alpha_tokenswap:u8, bump_alpha_pot: u8) -> Result<()>{
+    pub fn transfer_alpha_tokens(ctx: Context<TransferAlphaTokens>, bump_alpha_tokenswap:u8, bump_alpha_pot: u8, amount: u64) -> Result<()>{
         msg!("Transfer tokenswap");
         instructions::transfer_alpha_tokens::handler(ctx, amount, bump_alpha_tokenswap, bump_alpha_pot)
     }
