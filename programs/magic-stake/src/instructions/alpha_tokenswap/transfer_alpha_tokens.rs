@@ -28,7 +28,7 @@ pub struct TransferAlphaTokens <'info> {
     pub token_program: Program<'info, Token>,
 }
 
-pub fn handler(ctx: Context<TransferAlphaTokens>, amount: u64) -> Result<()>{
+pub fn handler(ctx: Context<TransferAlphaTokens>, amount: u64, bump_alpha_tokenswap:u8, bump_alpha_pot: u8) -> Result<()>{
     let alpha_tokenswap_account_info = ctx.accounts.alpha_tokenswap.to_account_info();
     let alpha_creator = &ctx.accounts.alpha_creator;
     if ctx.accounts.alpha_pot.amount < amount {

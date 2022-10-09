@@ -92,9 +92,7 @@ pub fn handler(ctx: Context<ClaimAlpha>) -> Result<()> {
     let to_claim_a = farmer
                     .reward_a
                     .claim_reward(ctx.accounts.reward_a_pot.amount)?;
-    // let to_claim_b = farmer
-    //                 .reward_b
-    //                 .claim_reward(ctx.accounts.reward_b_pot.amount)?;
+    
     if to_claim_a > 0 {
         token::transfer(
             ctx.accounts
@@ -103,15 +101,6 @@ pub fn handler(ctx: Context<ClaimAlpha>) -> Result<()> {
             to_claim_a,
         )?;
     }
-    // if to_claim_b > 0 {
-    //     token::transfer(
-    //         ctx.accounts
-    //             .transfer_b_ctx()
-    //             .with_signer(&[&ctx.accounts.farm.farm_seeds()]),
-    //          to_claim_b,
-    //         )?;
-    // }
-    // msg!("rewards claimed ({} A) and ({} B)", to_claim_a, to_claim_b);
     msg!("rewards claimed ({} A))", to_claim_a);
     Ok(())
 }

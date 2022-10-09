@@ -139,7 +139,7 @@ pub fn handler<'a, 'b, 'c, 'info>(
     
     ctx.accounts.vault.reload()?;
     if farmer.gems_staked == 0 {
-        farm.begin_staking(
+        farm.begin_staking_alpha(
             now_ts,
             ctx.accounts.vault.gem_count,
             ctx.accounts.vault.rarity_points,
@@ -147,7 +147,7 @@ pub fn handler<'a, 'b, 'c, 'info>(
         )?;
     } else {
         let extra_rarity = calc_rarity_points(&ctx.accounts.gem_rarity, amount)?;
-        farm.stake_extra_gems(
+        farm.stake_extra_gems_alpha(
             now_ts,
             ctx.accounts.vault.gem_count,
             ctx.accounts.vault.rarity_points,

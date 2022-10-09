@@ -74,7 +74,7 @@ pub fn handler(ctx: Context<StakeAlpha>) -> Result<()> {
     let vault = &ctx.accounts.vault;
     let now_ts = now_ts()?;
     farm.update_rewards_alpha(now_ts, Some(farmer), true)?;
-    farm.begin_staking(now_ts, vault.gem_count, vault.rarity_points, farmer)?;
+    farm.begin_staking_alpha(now_ts, vault.gem_count, vault.rarity_points, farmer)?;
 
     //collect a fee for staking
     // ctx.accounts.transfer_fee()?;

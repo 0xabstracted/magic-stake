@@ -1,21 +1,9 @@
-pub mod add_rarities_to_bank;
-pub mod add_to_bank_whitelist;
-pub mod authorize_funder;
 pub mod cancel_reward;
-pub mod deauthorize_funder;
 pub mod fund_reward;
-pub mod lock_reward;
-pub mod remove_from_bank_whitelist;
-pub mod treasury_payout;
-pub mod update_farm;
+pub mod init_fixed_farm;
+pub mod init_probable_farm;
 
-pub use add_rarities_to_bank::*;
-pub use add_to_bank_whitelist::*;
-pub use authorize_funder::*;
 pub use cancel_reward::*;
-pub use deauthorize_funder::*;
 pub use fund_reward::*;
-pub use lock_reward::*;
-pub use remove_from_bank_whitelist::*;
-pub use treasury_payout::*;
-pub use update_farm::*;
+pub use init_fixed_farm::*;
+pub use init_probable_farm::*;

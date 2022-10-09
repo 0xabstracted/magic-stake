@@ -87,10 +87,10 @@ pub fn handler(ctx: Context<UnstakeAlpha>, skip_rewards: bool) -> Result<()> {
     // skipping rewards is an EMERGENCY measure in case farmer's rewards are overflowing
     // at least this lets them get their assets out
     if !skip_rewards {
-        farm.update_rewards(now_ts, Some(farmer), false)?;
+        farm.update_rewards_alpha(now_ts, Some(farmer), false)?;
     }
     // end staking (will cycle through state on repeated calls)
-    farm.end_staking(now_ts, farmer)?;
+    farm.end_staking_alpha(now_ts, farmer)?;
     let farm = &ctx.accounts.farm;
     let farmer = &ctx.accounts.farmer;
 

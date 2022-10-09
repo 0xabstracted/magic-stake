@@ -311,9 +311,9 @@ pub mod magic_stake {
         instructions::create_alpha_tokenswap::handler(ctx, amount)
     }
 
-    pub fn transfer_alpha_tokens(ctx: Context<TransferAlphaTokens>, amount: u64) -> Result<()>{
+    pub fn transfer_alpha_tokens(ctx: Context<TransferAlphaTokens>, amount: u64, bump_alpha_tokenswap:u8, bump_alpha_pot: u8) -> Result<()>{
         msg!("Transfer tokenswap");
-        instructions::transfer_alpha_tokens::handler(ctx, amount)
+        instructions::transfer_alpha_tokens::handler(ctx, amount, bump_alpha_tokenswap, bump_alpha_pot)
     }
     #[access_control(ctx.accounts.validate(&ctx, &params))]
     pub fn init_state(ctx: Context<InitState>, params: InitStateParams) -> Result<()> {
