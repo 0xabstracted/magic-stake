@@ -5,7 +5,7 @@ use anchor_lang::prelude::*;
 use gem_common::errors::ErrorCode;
 use gem_common::TryAdd;
 
-#[proc_macros::assert_size(680)]
+#[proc_macros::assert_size(696)]
 #[repr(C)]
 #[account]
 #[derive(Debug)]
@@ -101,6 +101,79 @@ impl Farmer {
     }
 
     fn can_end_cooldown(&self, now_ts: u64) -> bool {
+        now_ts >= self.cooldown_end_ts
+    }
+
+    pub fn begin_staking_alpha(
+        &mut self,
+        min_staking_period_sec: u64,
+        now_ts: u64,
+        gems_in_vault: u64, 
+        rarity_points_in_vault: u64,
+    ) -> Result<(u64, u64)> {
+        self.state = FarmerState::Staked;
+        let previous_gems_staked = self.gems_staked;
+        let previous_rarity_points_staked = self.rarity_points_staked;
+        msg!("Farmer begin_staking \t previous_gems_staked:{}",previous_gems_staked);
+        msg!("Farmer begin_staking \t previous_rarity_points_staked:{}",previous_rarity_points_staked);
+        msg!("Farmer begin_staking \t gems_in_vault:{}",gems_in_vault);
+        msg!("Farmer begin_staking \t rarity_points_in_vault:{}",rarity_points_in_vault);
+        msg!("Farmer begin_staking \t min_staking_period_sec:{}",min_staking_period_sec);
+        self.gems_staked = gems_in_vault;
+        self.rarity_points_staked = rarity_points_in_vault;
+        self.min_staking_end_ts = now_ts.try_add(min_staking_period_sec)?;
+        self.cooldown_end_ts = 0; // zero it out in case it was set before
+
+        Ok((previous_gems_staked, previous_rarity_points_staked))
+    }
+
+    pub fn end_staking_begin_cooldown_alpha(
+        &mut self,
+        now_ts: u64,
+        cooldown_period_sec: u64,
+    ) -> Result<(u64, u64)> {
+        if !self.can_end_cooldown(now_ts) {
+            return Err(error!(ErrorCode::MinStakingNotPassed));
+        }
+
+        self.state = FarmerState::PendingCooldown;
+        let gems_unstaked = self.gems_staked;
+        let rarity_points_unstaked = self.rarity_points_staked;
+        self.gems_staked = 0; //no rewards will accrue during the cooldown period
+        self.rarity_points_staked = 0;
+        self.cooldown_end_ts = now_ts.try_add(cooldown_period_sec)?;
+        msg!("end_staking_begin_cooldown \t self.cooldown_end_ts:{}",self.cooldown_end_ts);
+        msg!("end_staking_begin_cooldown \t rarity_points_unstaked:{}",rarity_points_unstaked);
+        
+        msg!(
+           "end_staking_begin_cooldown \t {} gems are cooling down {}",
+             gems_unstaked,
+             self.identity,
+        );
+        Ok((gems_unstaked, rarity_points_unstaked))
+    }
+
+    pub fn end_cooldown_alpha(&mut self, now_ts: u64) -> Result<()> {
+        if self.can_end_staking(now_ts) {
+            return Err(error!(ErrorCode::CooldownNotPassed));
+        }
+        self.state = FarmerState::Unstaked;
+        self.gems_staked = 0;
+        self.rarity_points_staked = 0;
+        self.cooldown_end_ts = 0;
+        self.min_staking_end_ts = 0;
+        msg!(
+           "end_cooldown \t gems now unstaked, cooldown is done and available for withdrawal for {}",
+             self.identity
+        );
+        Ok(())
+    }
+
+    fn can_end_staking_alpha(&self, now_ts: u64) -> bool {
+        now_ts >= self.min_staking_end_ts
+    }
+
+    fn can_end_cooldown_alpha(&self, now_ts: u64) -> bool {
         now_ts >= self.cooldown_end_ts
     }
 }

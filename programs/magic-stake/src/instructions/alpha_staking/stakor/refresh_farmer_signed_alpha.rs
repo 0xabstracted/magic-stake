@@ -27,7 +27,7 @@ pub fn handler(ctx: Context<RefreshFarmerSignedAlpha>, reenroll: bool) -> Result
     let farmer = &mut ctx.accounts.farmer;
     let now_ts = now_ts()?;
 
-    farm.update_rewards(now_ts, Some(farmer), reenroll)?;
+    farm.update_rewards_alpha(now_ts, Some(farmer), reenroll)?;
     msg!("{} farmer refreshed (SIGNED)", farmer.key());
     Ok(())
 }

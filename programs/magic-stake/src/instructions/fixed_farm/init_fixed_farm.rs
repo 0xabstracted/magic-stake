@@ -30,7 +30,6 @@ pub struct InitFixedFarm<'info> {
     #[account(init, seeds = [
             b"token_treasury".as_ref(),
             farm.key().as_ref(),
-            reward_a_mint.key().as_ref(),
         ],
         bump,
         token::mint = reward_a_mint,
@@ -84,7 +83,7 @@ pub fn handler(
     farm.version = LATEST_FARM_VERSION;
     farm.farm_manager = ctx.accounts.farm_manager.key();
     //    farm.farm_treasury = farm_treasury;
-    farm.farm_treasury = ctx.accounts.farm_treasury_token.key();
+    farm.farm_treasury_token = ctx.accounts.farm_treasury_token.key();
     farm.farm_authority = ctx.accounts.farm_authority.key();
     farm.farm_authority_seed = farm.key();
     farm.farm_authority_bump_seed = [bump_auth];

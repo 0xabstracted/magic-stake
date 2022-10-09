@@ -1,3 +1,4 @@
+use crate::state::FixedRateMultiplierConfig;
 use crate::state::farm::funds_tracker::*;
 use crate::state::farm::reward_type::*;
 use crate::state::farm::time_tracker::*;
@@ -9,7 +10,7 @@ use crate::state::ProbableRateConfig;
 use anchor_lang::prelude::*;
 use gem_common::errors::ErrorCode;
 
-#[proc_macros::assert_size(440)]
+#[proc_macros::assert_size(456)]
 #[repr(C)]
 #[derive(Debug, Clone, Copy, AnchorDeserialize, AnchorSerialize)]
 pub struct FarmReward {
@@ -79,17 +80,19 @@ impl FarmReward {
         now_ts: u64,
         //        variable_rate_config: Option<VariableRateConfig>,
         fixed_rate_config: Option<FixedRateConfig>,
+        fixed_rate_multiplier_config: Option<FixedRateMultiplierConfig>
     ) -> Result<()> {
         if self.is_locked(now_ts) {
             return Err(error!(ErrorCode::RewardLocked));
         }
 
         match self.reward_type {
-            RewardType::Fixed => self.fixed_rate_reward.fund_reward(
+            RewardType::Fixed => self.fixed_rate_reward.fund_reward_alpha(
                 now_ts,
                 &mut self.times,
                 &mut self.funds,
                 fixed_rate_config.unwrap(),
+                fixed_rate_multiplier_config.unwrap()
             ),
             _ => return Err(error!(ErrorCode::UnknownRewardType))
             
@@ -116,6 +119,27 @@ impl FarmReward {
         }
     }
 
+    pub fn cancel_reward_by_type_alpha(&mut self, now_ts: u64) -> Result<u64> {
+        if self.is_locked(now_ts) {
+            return Err(error!(ErrorCode::RewardLocked));
+        }
+        match self.reward_type {
+            RewardType::Fixed => {
+                self.fixed_rate_reward
+                    .cancel_reward_alpha(now_ts, &mut self.times, &mut self.funds)
+            }
+            // RewardType::Variable => {
+            //     self.variable_rate
+            //         .cancel_reward(now_ts, &mut self.times, &mut self.funds)
+            // }
+            RewardType::Probable => {
+                self.probable_rate_reward
+                    .cancel_probable_reward(now_ts, &mut self.times, &mut self.funds)
+            }
+        }
+    }
+
+
     pub fn update_accrued_reward_by_type(
         &mut self,
         now_ts: u64,
@@ -134,6 +158,57 @@ impl FarmReward {
                 }
                 // msg!("FarmReward update_accrued_reward_by_type farmer_rarity_points_staked.unwrap(){}",farmer_rarity_points_staked.unwrap());
                 self.fixed_rate_reward.update_accrued_reward(
+                    now_ts,
+                    &mut self.times,
+                    &mut self.funds,
+                    farmer_rarity_points_staked.unwrap(),
+                    farmer_reward.unwrap(),
+                    reenroll,
+                )
+            }
+            // RewardType::Variable => self.variable_rate.update_accrued_reward(
+            //     now_ts,
+            //     &mut self.times,
+            //     &mut self.funds,
+            //     farm_rarity_points_staked,
+            //     farmer_rarity_points_staked,
+            //     farmer_reward,
+            // ),
+            RewardType::Probable => {
+                if farmer_reward.is_none() {
+                    return Ok(());
+                }
+
+                self.probable_rate_reward.update_accrued_probable_reward(
+                    now_ts,
+                    &mut self.times,
+                    &mut self.funds,
+                    farmer_rarity_points_staked.unwrap(),
+                    farmer_reward.unwrap(),
+                    reenroll,
+                )
+            }
+        }
+    }
+
+    pub fn update_accrued_reward_by_type_alpha(
+        &mut self,
+        now_ts: u64,
+        _farm_rarity_points_staked: u64,
+        farmer_rarity_points_staked: Option<u64>,
+        farmer_reward: Option<&mut FarmerReward>,
+        reenroll: bool,
+    ) -> Result<()> {
+
+        match self.reward_type {
+            RewardType::Fixed => {
+                // for fixed reward we only update if farmer reward is passed
+                if farmer_reward.is_none() {
+                    msg!("farmer_reward not present, no farmer");
+                    return Ok(());
+                }
+                // msg!("FarmReward update_accrued_reward_by_type farmer_rarity_points_staked.unwrap(){}",farmer_rarity_points_staked.unwrap());
+                self.fixed_rate_reward.update_accrued_reward_alpha(
                     now_ts,
                     &mut self.times,
                     &mut self.funds,

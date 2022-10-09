@@ -131,7 +131,8 @@ pub fn handler<'a, 'b, 'c, 'info>(
     let farmer = &mut ctx.accounts.farmer;
     let farm = &mut ctx.accounts.farm;
     let now_ts = now_ts()?;
-        farm.update_rewards(now_ts, Some(farmer), true)?;
+    
+    farm.update_rewards_alpha(now_ts, Some(farmer), true)?;
 
     msg!("handler \t farmer.gems_staked:{}", farmer.gems_staked);
     msg!("handler \t farmer.reward_a.fixed_rate:{:?}", farmer.reward_a.fixed_rate);

@@ -19,18 +19,14 @@ use crate::state::Farmer;
 #[instruction(bump_auth: u8, bump_token_treasury: u8, bump_farmer: u8)]
 pub struct Unstake<'info> {
     // farm
-    #[account(mut, has_one = farm_authority, has_one = farm_treasury, has_one = bank)]
+    #[account(mut, has_one = farm_authority, has_one = farm_treasury_token, has_one = bank)]
     pub farm: Box<Account<'info, Farm>>,
     /// CHECK:
     #[account(seeds = [farm.key().as_ref()], bump = bump_auth)]
     pub farm_authority: AccountInfo<'info>,
-    /// CHECK:
-   // #[account(mut, seeds = [b"treasury".as_ref(), farm.key().as_ref()], bump = bump_treasury)]
-    pub farm_treasury: AccountInfo<'info>,
     #[account( seeds = [
         b"token_treasury".as_ref(),
         farm.key().as_ref(),
-        farm.reward_a.reward_mint.as_ref(),
     ],
     bump = bump_token_treasury,
     )]
@@ -74,7 +70,7 @@ impl<'info> Unstake<'info> {
             self.token_program.to_account_info(), 
             Transfer { 
                 from: self.identity.to_account_info(), 
-                to: self.farm_treasury.clone(), 
+                to: self.farm_treasury_token.to_account_info(), 
                 authority: self.identity.to_account_info(), 
             },
         )

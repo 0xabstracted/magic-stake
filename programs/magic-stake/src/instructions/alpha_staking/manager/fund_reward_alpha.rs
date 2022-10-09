@@ -1,4 +1,4 @@
-use crate::state::{AuthorizationProof, Farm, FixedRateConfig};
+use crate::state::{AuthorizationProof, Farm, FixedRateConfig, FixedRateMultiplierConfig};
 use anchor_lang::prelude::*;
 use anchor_spl::token::{self, Mint, Token, TokenAccount, Transfer};
 use gem_common::now_ts;
@@ -54,15 +54,17 @@ impl<'info> FundRewardAlpha<'info> {
 pub fn handler(
     ctx: Context<FundRewardAlpha>,
     fixed_rate_config: Option<FixedRateConfig>,
+    fixed_rate_multiplier_config: Option<FixedRateMultiplierConfig>
 ) -> Result<()> {
     let amount = fixed_rate_config.unwrap().amount;
     let farm = &mut ctx.accounts.farm;
     let now_ts = now_ts()?;
-    farm.update_rewards(now_ts, None, true)?;
+    farm.update_rewards_alpha(now_ts, None, true)?;
     farm.fund_reward_by_mint_alpha(
         now_ts, 
         ctx.accounts.reward_mint.key(), 
         fixed_rate_config, 
+        fixed_rate_multiplier_config
     )?;
 
     // do the transfer

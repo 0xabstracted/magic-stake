@@ -17,23 +17,25 @@ pub mod magic_stake {
     pub fn init_farm_alpha(
         ctx: Context<InitFarmAlpha>,
         bump_auth: u8,
-        _bump_treasury: u8,
+        _bump_treasury_token: u8,
         //reward_type_b: RewardType,
         farm_config: FarmConfig,
         max_counts: Option<MaxCounts>,
-    ) -> Result<()> {
+        farm_treasury_token: Pubkey,
+) -> Result<()> {
         msg!("init farm");
         instructions::init_farm_alpha::handler(
             ctx,
             bump_auth,
             farm_config,
             max_counts,
+            farm_treasury_token
         )
     }
     pub fn init_fixed_farm(
         ctx: Context<InitFixedFarm>,
         bump_auth: u8,
-        _bump_treasury: u8,
+        _bump_treasury_token: u8,
         lp_type: LPType,
         farm_config: FarmConfig,
         max_counts: Option<MaxCounts>,
@@ -50,7 +52,7 @@ pub mod magic_stake {
     pub fn init_probable_farm(
         ctx: Context<InitProbableFarm>,
         bump_auth: u8,
-        _bump_treasury: u8,
+        _bump_treasury_token: u8,
         lp_type: LPType,
         farm_config: FarmConfig,
         max_counts: Option<MaxCounts>,
@@ -76,11 +78,11 @@ pub mod magic_stake {
     pub fn payout_from_treasury(
         ctx: Context<TreasuryPayout>,
         _bump_auth: u8,
-        bump_treasury: u8,
+        bump_treasury_token: u8,
         lamports: u64,
     ) -> Result<()> {
         msg!("payout");
-        instructions::treasury_payout::handler(ctx, bump_treasury, lamports)
+        instructions::treasury_payout::handler(ctx, bump_treasury_token, lamports)
     }
 
     pub fn add_to_bank_whitelist(
@@ -132,7 +134,7 @@ pub mod magic_stake {
     pub fn unstake(
         ctx: Context<Unstake>,
         _bump_auth: u8,
-        _bump_treasury: u8,
+        _bump_treasury_token: u8,
         _bump_farmer: u8,
         skip_rewards: bool,
     ) -> Result<()> {
@@ -143,7 +145,7 @@ pub mod magic_stake {
     pub fn unstake_alpha(
         ctx: Context<UnstakeAlpha>,
         _bump_auth: u8,
-        _bump_treasury: u8,
+        _bump_treasury_token: u8,
         _bump_farmer: u8,
         skip_rewards: bool,
     ) -> Result<()> {
@@ -273,11 +275,13 @@ pub mod magic_stake {
         _bump_proof: u8,
         _bump_pot: u8,
         fixed_rate_config: Option<FixedRateConfig>,
-    ) -> Result<()> {
+        fixed_rate_multiplier_config: Option<FixedRateMultiplierConfig>
+) -> Result<()> {
         msg!("fund reward alpha");
         instructions::fund_reward_alpha::handler(
             ctx,
             fixed_rate_config,
+            fixed_rate_multiplier_config
         )
     }
 

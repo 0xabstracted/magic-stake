@@ -11,7 +11,7 @@ pub const FEE_WALLET: &str = "Bi4UpEtKxnHwCw7b9xkMCouGT6xLNm8nixs2fTmxTevs"; //5
 // const FEE_LAMPORTS: u64 = 2_500_000_000; // 2.5 SOL per farm
 
 #[derive(Accounts)]
-#[instruction(bump_auth: u8, bump_treasury: u8)]
+#[instruction(bump_auth: u8, bump_token_treasury: u8)]
 pub struct InitFarmAlpha<'info> {
     // farm
     #[account(init, payer = payer, space = 8 + std::mem::size_of::<Farm>())]
@@ -47,7 +47,6 @@ pub struct InitFarmAlpha<'info> {
     #[account(init, seeds = [
             b"token_treasury".as_ref(),
             farm.key().as_ref(),
-            reward_a_mint.key().as_ref(),
         ],
         bump,
         token::mint = reward_a_mint,
@@ -105,27 +104,31 @@ pub fn handler(
     //    reward_type_b: RewardType,
     farm_config: FarmConfig,
     max_counts: Option<MaxCounts>,
+    farm_treasury_token: Pubkey,
 ) -> Result<()> {
-    //manually verify treasury
-    // let (pk, _bump) = Pubkey::find_program_address(
-    //     &[b"treasury".as_ref(), ctx.accounts.farm.key().as_ref()],
-    //     ctx.program_id,
-    // );
-    // if _farm_treasury.key() != pk {
-    //     return Err(error!(ErrorCode::InvalidParameter));
-    // }
+    //record new farm details
+    let farm = &mut ctx.accounts.farm;
+    
+    // manually verify treasury
+    let (pk, _bump) = Pubkey::find_program_address(
+        &[b"token_treasury".as_ref(),
+        farm.key().as_ref()
+        ],
+        ctx.program_id,
+    );
+    if farm_treasury_token.key() != pk {
+        return Err(error!(ErrorCode::InvalidParameter));
+    }
 
     if farm_config.unstaking_fee_percent > 100 {
         return Err(error!(ErrorCode::InvalidUnstakingFee));
     }
 
-    //record new farm details
-    let farm = &mut ctx.accounts.farm;
-
+    
     farm.version = LATEST_FARM_VERSION;
     farm.farm_manager = ctx.accounts.farm_manager.key();
-    //    farm.farm_treasury = farm_treasury;
-    farm.farm_treasury = ctx.accounts.farm_treasury_token.key();
+    farm.farm_treasury_token = farm_treasury_token;
+    // farm.farm_treasury = ctx.accounts.farm_treasury_token.key();
     farm.farm_authority = ctx.accounts.farm_authority.key();
     farm.farm_authority_seed = farm.key();
     farm.farm_authority_bump_seed = [bump_auth];

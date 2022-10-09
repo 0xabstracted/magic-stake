@@ -28,7 +28,7 @@ pub fn handler(ctx: Context<RefreshFarmerAlpha>) -> Result<()> {
     let farmer = &mut ctx.accounts.farmer;
     let now_ts = now_ts()?;
 
-    farm.update_rewards(now_ts, Some(farmer), true)?;
+    farm.update_rewards_alpha(now_ts, Some(farmer), true)?;
     msg!("{} farmer refreshed", farmer.key());
     Ok(())
 }

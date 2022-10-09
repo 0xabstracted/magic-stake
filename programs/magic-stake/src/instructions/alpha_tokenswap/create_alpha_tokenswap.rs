@@ -7,7 +7,7 @@ use crate::state::alpha_token_swaps::AlphaTokenswap;
 pub struct CreateAlphaTokenswap <'info> {
     #[account(
         init,
-        seeds = [b"alpha_tokenswap".as_ref(), alpha_creator.key().as_ref()],
+        seeds = [b"alpha_tokenswap".as_ref(), alpha_creator.key().as_ref(), alpha_mint.key().as_ref(),],
         bump,
         payer = alpha_creator,
         space = 8 + std::mem::size_of::<AlphaTokenswap>(), 
@@ -17,7 +17,7 @@ pub struct CreateAlphaTokenswap <'info> {
     pub alpha_creator: Signer<'info>,
     #[account(
         init,
-        seeds = [b"alpha_pot".as_ref(), alpha_tokenswap.key().as_ref()],
+        seeds = [b"alpha_pot".as_ref(), alpha_tokenswap.key().as_ref(), alpha_mint.key().as_ref()],
         bump,
         payer = alpha_creator,
         token::mint = alpha_mint,

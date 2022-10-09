@@ -88,7 +88,7 @@ pub fn handler(ctx: Context<ClaimAlpha>) -> Result<()> {
     // update accrued rewards before claiming
     let farm = &mut ctx.accounts.farm;
     let farmer = &mut ctx.accounts.farmer;
-    farm.update_rewards(now_ts()?, Some(farmer), true)?;
+    farm.update_rewards_alpha(now_ts()?, Some(farmer), true)?;
     let to_claim_a = farmer
                     .reward_a
                     .claim_reward(ctx.accounts.reward_a_pot.amount)?;

@@ -19,23 +19,19 @@ use crate::state::Farmer;
 #[instruction(bump_auth: u8, bump_token_treasury: u8, bump_farmer: u8)]
 pub struct UnstakeAlpha<'info> {
     // farm
-    #[account(mut, has_one = farm_authority, has_one = farm_treasury, has_one = bank)]
+    #[account(mut, has_one = farm_authority, has_one = farm_treasury_token, has_one = bank)]
     pub farm: Box<Account<'info, Farm>>,
     /// CHECK:
     #[account(seeds = [farm.key().as_ref()], bump = bump_auth)]
     pub farm_authority: AccountInfo<'info>,
     /// CHECK:
-   // #[account(mut, seeds = [b"treasury".as_ref(), farm.key().as_ref()], bump = bump_treasury)]
-    pub farm_treasury: AccountInfo<'info>,
-    #[account( seeds = [
-        b"token_treasury".as_ref(),
-        farm.key().as_ref(),
-        farm.reward_a.reward_mint.as_ref(),
-    ],
-    bump = bump_token_treasury,
+   #[account(mut, seeds = [
+        b"token_treasury".as_ref(), 
+        farm.key().as_ref()
+        ], 
+        bump = bump_token_treasury
     )]
     pub farm_treasury_token: Box<Account<'info, TokenAccount>>,
-
     // farmer
     #[account(mut, has_one = farm, has_one = identity, has_one = vault,
         seeds = [
@@ -74,7 +70,7 @@ impl<'info> UnstakeAlpha<'info> {
             self.token_program.to_account_info(), 
             Transfer { 
                 from: self.identity.to_account_info(), 
-                to: self.farm_treasury.clone(), 
+                to: self.farm_treasury_token.to_account_info(), 
                 authority: self.identity.to_account_info(), 
             },
         )

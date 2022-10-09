@@ -5,16 +5,19 @@ use gem_common::errors::ErrorCode;
 pub use crate::state::AlphaTokenswap;
 
 #[derive(Accounts)]
-#[instruction(bump_alpha_pot: u8)]
+#[instruction(bump_alpha_tokenswap:u8, bump_alpha_pot: u8)]
 pub struct TransferAlphaTokens <'info> {
     #[account(
-        mut, has_one = alpha_creator
+        mut, 
+        seeds = [b"alpha_tokenswap".as_ref(), alpha_creator.key().as_ref(), alpha_mint.key().as_ref(),],
+        bump = bump_alpha_tokenswap,
+        has_one = alpha_creator
     )]
     pub alpha_tokenswap: Account<'info, AlphaTokenswap>,
     /// CHECK:
     pub alpha_creator: AccountInfo<'info>,
     #[account(
-        mut, seeds = [b"alpha_pot".as_ref(), alpha_tokenswap.key().as_ref()], bump = bump_alpha_pot,
+        mut, seeds = [b"alpha_pot".as_ref(), alpha_tokenswap.key().as_ref(), alpha_mint.key().as_ref()], bump = bump_alpha_pot,
     )]
     pub alpha_pot: Account<'info, TokenAccount>,
     pub alpha_mint: Account<'info, Mint>,

@@ -61,10 +61,10 @@ pub fn handler(ctx: Context<CancelRewardAlpha>) -> Result<()> {
     // update existing rewards
     let farm = &mut ctx.accounts.farm;
     let now_ts = now_ts()?;
-    farm.update_rewards(now_ts, None, true)?;
+    farm.update_rewards_alpha(now_ts, None, true)?;
 
     // calculate cancellation amount while recording cancellation
-    let cancel_amount = farm.cancel_reward_by_mint(now_ts, ctx.accounts.reward_mint.key())?;
+    let cancel_amount = farm.cancel_reward_by_mint_alpha(now_ts, ctx.accounts.reward_mint.key())?;
 
     // do the transfer
     token::transfer(

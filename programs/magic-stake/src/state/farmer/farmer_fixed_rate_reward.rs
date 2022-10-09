@@ -1,8 +1,8 @@
 use crate::state::fixed_rewards::fixed_rate_schedule::*;
 use anchor_lang::prelude::*;
-use gem_common::{TryAdd, TrySub};
+use gem_common::{TryAdd, TrySub, TryDiv, TryMul};
 
-#[proc_macros::assert_size(136)]
+#[proc_macros::assert_size(152)]
 #[repr(C)]
 #[derive(Debug, Clone, Copy, Default, AnchorDeserialize, AnchorSerialize)]
 pub struct FarmerFixedRateReward {
@@ -16,6 +16,8 @@ pub struct FarmerFixedRateReward {
     pub last_updated_ts: u64, //8
     pub promised_schedule: FixedRateSchedule, //88
     pub promised_duration: u64,               //8
+    pub number_of_nfts: u64,
+    pub extra_reward: u64,
     _reserved: [u8; 16],                      //16
 }
 
@@ -66,5 +68,19 @@ impl FarmerFixedRateReward {
         msg!("newly_accrued_reward \t rarity_points:{}",rarity_points);
         self.promised_schedule
             .reward_amount(start_from, end_at, rarity_points)
+    }
+    pub fn newly_accrued_reward_alpha(&self, now_ts: u64, rarity_points: u64) -> Result<u64> {
+        let start_from = self.time_from_staking_to_update()?;
+        let end_at = self
+            .reward_upper_bound(now_ts)?
+            .try_sub(self.begin_staking_ts)?;
+        let multy = rarity_points.try_div(self.number_of_nfts)?;
+        let multiplier = multy.try_mul(self.number_of_nfts)?.try_div(self.promised_schedule.denominator)?;
+        msg!("newly_accrued_reward_alpha \t start_from:{}",start_from);
+        msg!("end_at:{}",end_at);
+        msg!("newly_accrued_reward_alpha \t rarity_points:{}",rarity_points);
+        self.promised_schedule
+            .reward_amount(start_from, end_at, rarity_points)?
+            .try_add(multiplier)
     }
 }

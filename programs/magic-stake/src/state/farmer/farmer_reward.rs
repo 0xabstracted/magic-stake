@@ -6,7 +6,7 @@ use anchor_lang::prelude::*;
 use gem_common::TryAdd;
 use gem_common::TrySub;
 
-#[proc_macros::assert_size(352)]
+#[proc_macros::assert_size(368)]
 #[repr(C)]
 #[derive(Debug, Clone, Copy, AnchorDeserialize, AnchorSerialize)]
 pub struct FarmerReward {
