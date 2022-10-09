@@ -1,20 +1,19 @@
-use crate::instructions::FEE_WALLET;
+// use crate::instructions::FEE_WALLET;
 use crate::state::Farm;
 use crate::state::Farmer;
 use crate::state::FixedRateSchedule;
-use crate::state::LPRateSchedule;
 use anchor_lang::prelude::*;
 // use anchor_lang::solana_program::{program::invoke, system_instruction};
 use gem_bank::{self, cpi::accounts::InitVault, program::GemBank, state::Bank};
 use gem_common::TryAdd;
-use std::str::FromStr;
+// use std::str::FromStr;
 
 
 
 // const FEE_LAMPORTS: u64 = 10_000_000; // 0.01 SOL per farmer
 
 #[derive(Accounts)]
-pub struct InitFarmer<'info> {
+pub struct InitFarmerAlpha<'info> {
     // farm
     #[account(mut, has_one = bank)]
     pub farm: Box<Account<'info, Farm>>,
@@ -43,13 +42,13 @@ pub struct InitFarmer<'info> {
     // misc
     #[account(mut)]
     pub payer: Signer<'info>,
-    /// CHECK:
-    #[account(mut, address = Pubkey::from_str(FEE_WALLET).unwrap())]
-    pub fee_acc: AccountInfo<'info>,
+    // /// CHECK:
+    // #[account(mut, address = Pubkey::from_str(FEE_WALLET).unwrap())]
+    // pub fee_acc: AccountInfo<'info>,
     pub system_program: Program<'info, System>,
 }
 
-impl<'info> InitFarmer<'info> {
+impl<'info> InitFarmerAlpha<'info> {
     fn init_vault_ctx(&self) -> CpiContext<'_, '_, '_, 'info, InitVault<'info>> {
         CpiContext::new(
             self.gem_bank.to_account_info(),
@@ -78,21 +77,19 @@ impl<'info> InitFarmer<'info> {
     */
 }
 
-pub fn handler(ctx: Context<InitFarmer>) -> Result<()> {
+pub fn handler(ctx: Context<InitFarmerAlpha>) -> Result<()> {
     // record new farmer details
     let farmer = &mut ctx.accounts.farmer;
     farmer.farm = ctx.accounts.farm.key();
     farmer.identity = ctx.accounts.identity.key();
     farmer.vault = ctx.accounts.vault.key();
     farmer.reward_a.fixed_rate.promised_schedule = FixedRateSchedule::default();
-    farmer.lp_points.lp_rate.lp_promised_schedule = LPRateSchedule::default();
     //    farmer.reward_b.fixed_rate.promised_schedule = FixedRateSchedule::default();
 
     // update farm
     let farm = &mut ctx.accounts.farm;
     farm.farmer_count.try_add_assign(1)?;
     msg!("farmer.reward_a {:?}", farmer.reward_a);
-    msg!("farmer.lp_points {:?}", farmer.lp_points);
     // do a cpi call to start a new vault
     let vault_owner = ctx.accounts.identity.key();
     let vault_name = String::from("farm_vault");

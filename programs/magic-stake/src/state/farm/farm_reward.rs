@@ -74,6 +74,27 @@ impl FarmReward {
             ),
         }
     }
+    pub fn fund_reward_by_type_alpha(
+        &mut self,
+        now_ts: u64,
+        //        variable_rate_config: Option<VariableRateConfig>,
+        fixed_rate_config: Option<FixedRateConfig>,
+    ) -> Result<()> {
+        if self.is_locked(now_ts) {
+            return Err(error!(ErrorCode::RewardLocked));
+        }
+
+        match self.reward_type {
+            RewardType::Fixed => self.fixed_rate_reward.fund_reward(
+                now_ts,
+                &mut self.times,
+                &mut self.funds,
+                fixed_rate_config.unwrap(),
+            ),
+            _ => return Err(error!(ErrorCode::UnknownRewardType))
+            
+        }
+    }
 
     pub fn cancel_reward_by_type(&mut self, now_ts: u64) -> Result<u64> {
         if self.is_locked(now_ts) {

@@ -119,10 +119,12 @@ pub enum ErrorCode {
     Reserved58,
     Reserved59,
 
+    #[msg("unknown Reward type")]
+    UnknownRewardType, // 0x17ac,
     #[msg("unknown LP type")]
-    UnknownLPType, // 0x17ac,
+    UnknownLPType, // 0x17ad,
     #[msg("LP locked")]
-    LPLocked, // 0x17ad
+    LPLocked, // 0x17ae
     #[msg("Not a valid Switchboard VRF account")]
     InvalidSwitchboardVrfAccount,
     #[msg("The max result must not exceed u64")]
@@ -131,5 +133,7 @@ pub enum ErrorCode {
     EmptyCurrentRoundResult,
     #[msg("Invalid authority account provided.")]
     InvalidAuthorityError,
+    #[msg("Swapping pot is empty.")]
+    EmptySwapPot,
 
 }

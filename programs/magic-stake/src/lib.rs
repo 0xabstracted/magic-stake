@@ -9,34 +9,27 @@ use instructions::*;
 use state::*;
 use vrf_actions::*;
 
-declare_id!("CMftun186ypSsjsZM8eVfDA7AsPZLoScWpTEYBvCzZVQ");
+declare_id!("ETiwBTiVf2wNApe5Qc1sGozV3nkUDKNRVuCWzJSFWWfV");
 
 #[program]
 pub mod magic_stake {
     use super::*;
-    // pub fn init_farm(
-    //     ctx: Context<InitFarm>,
-    //     bump_auth: u8,
-    //     _bump_treasury: u8,
-    //     reward_type_a: RewardType,
-    //     //reward_type_b: RewardType,
-    //     lp_type: LPType,
-    //     farm_config: FarmConfig,
-    //     max_counts: Option<MaxCounts>,
-    //     _farm_treasury: Pubkey,
-    // ) -> Result<()> {
-    //     msg!("init farm");
-    //     instructions::init_farm::handler(
-    //         ctx,
-    //         bump_auth,
-    //         reward_type_a,
-    //         //reward_type_b,
-    //         lp_type,
-    //         farm_config,
-    //         max_counts,
-    //         _farm_treasury,
-    //     )
-    // }
+    pub fn init_farm_alpha(
+        ctx: Context<InitFarmAlpha>,
+        bump_auth: u8,
+        _bump_treasury: u8,
+        //reward_type_b: RewardType,
+        farm_config: FarmConfig,
+        max_counts: Option<MaxCounts>,
+    ) -> Result<()> {
+        msg!("init farm");
+        instructions::init_farm_alpha::handler(
+            ctx,
+            bump_auth,
+            farm_config,
+            max_counts,
+        )
+    }
     pub fn init_fixed_farm(
         ctx: Context<InitFixedFarm>,
         bump_auth: u8,
@@ -114,18 +107,26 @@ pub mod magic_stake {
     //     msg!("init farmer");
     //     instructions::init_farmer::handler(ctx)
     // }
+    pub fn init_farmer_alpha(ctx: Context<InitFarmerAlpha>) -> Result<()> {
+        msg!("init farmer alpha");
+        instructions::init_farmer_alpha::handler(ctx)
+    }
     pub fn init_fixed_farmer(ctx: Context<InitFixedFarmer>) -> Result<()> {
-        msg!("init farmer");
+        msg!("init farmer fixed");
         instructions::init_fixed_farmer::handler(ctx)
     }
     pub fn init_probable_farmer(ctx: Context<InitProbableFarmer>) -> Result<()> {
-        msg!("init farmer");
+        msg!("init farmer probable");
         instructions::init_probable_farmer::handler(ctx)
     }
     
     pub fn stake(ctx: Context<Stake>, _bump_auth: u8, _bump_farmer: u8) -> Result<()> {
         msg!("stake");
         instructions::stake::handler(ctx)
+    }
+    pub fn stake_alpha(ctx: Context<StakeAlpha>, _bump_auth: u8, _bump_farmer: u8) -> Result<()> {
+        msg!("stake");
+        instructions::stake_alpha::handler(ctx)
     }
 
     pub fn unstake(
@@ -139,6 +140,17 @@ pub mod magic_stake {
         instructions::unstake::handler(ctx, skip_rewards)
     }
 
+    pub fn unstake_alpha(
+        ctx: Context<UnstakeAlpha>,
+        _bump_auth: u8,
+        _bump_treasury: u8,
+        _bump_farmer: u8,
+        skip_rewards: bool,
+    ) -> Result<()> {
+        msg!("unstake alpha");
+        instructions::unstake_alpha::handler(ctx, skip_rewards)
+    }
+
     pub fn claim(
         ctx: Context<Claim>,
         _bump_auth: u8,
@@ -150,6 +162,18 @@ pub mod magic_stake {
         instructions::claim::handler(ctx)
     }
 
+    pub fn claim_alpha(
+        ctx: Context<ClaimAlpha>,
+        _bump_auth: u8,
+        _bump_farmer: u8,
+        _bump_pot_a: u8,
+        _bump_pot_b: u8,
+    ) -> Result<()> {
+        msg!("claim alpha");
+        instructions::claim_alpha::handler(ctx)
+    }
+
+
     pub fn flash_deposit<'a, 'b, 'c, 'info>(
         ctx: Context<'a, 'b, 'c, 'info, FlashDeposit<'info>>,
         _bump_farmer: u8,
@@ -159,6 +183,17 @@ pub mod magic_stake {
     ) -> Result<()> {
         // msg!("flash deposit"); //have to remove all msgs! or run out of compute budget for this ix
         instructions::flash_deposit::handler(ctx, bump_vault_auth, bump_rarity, amount)
+    }
+
+    pub fn flash_deposit_alpha<'a, 'b, 'c, 'info>(
+        ctx: Context<'a, 'b, 'c, 'info, FlashDepositAlpha<'info>>,
+        _bump_farmer: u8,
+        bump_vault_auth: u8,
+        bump_rarity: u8,
+        amount: u64,
+    ) -> Result<()> {
+        // msg!("flash deposit"); //have to remove all msgs! or run out of compute budget for this ix
+        instructions::flash_deposit_alpha::handler(ctx, bump_vault_auth, bump_rarity, amount)
     }
 
     pub fn refresh_farmer(ctx: Context<RefreshFarmer>, _bump: u8) -> Result<()> {
@@ -174,9 +209,27 @@ pub mod magic_stake {
         _bump: u8,
         reenroll: bool,
     ) -> Result<()> {
-        msg!("refresh farmer");
+        msg!("refresh farmer signed");
         instructions::refresh_farmer_signed::handler(ctx, reenroll)
     }
+
+    pub fn refresh_farmer_alpha(ctx: Context<RefreshFarmerAlpha>, _bump: u8) -> Result<()> {
+        msg!("refresh farmer alpha");
+        instructions::refresh_farmer_alpha::handler(ctx)
+    }
+
+    /// this one needs to be called by the farmer themselves
+    /// it's useful if for some reason they can't re-enroll in another fixed reward cycle (eg reward exhausted)
+    /// but they want to be able to refresh themselves and claim their earned rewards up to this point
+    pub fn refresh_farmer_signed_alpha(
+        ctx: Context<RefreshFarmerSignedAlpha>,
+        _bump: u8,
+        reenroll: bool,
+    ) -> Result<()> {
+        msg!("refresh farmer signed alpha");
+        instructions::refresh_farmer_signed_alpha::handler(ctx, reenroll)
+    }
+
 
     // --------------------------------------- funder ops
 
@@ -215,6 +268,24 @@ pub mod magic_stake {
         instructions::cancel_reward::handler(ctx)
     }
 
+    pub fn fund_reward_alpha(
+        ctx: Context<FundRewardAlpha>,
+        _bump_proof: u8,
+        _bump_pot: u8,
+        fixed_rate_config: Option<FixedRateConfig>,
+    ) -> Result<()> {
+        msg!("fund reward alpha");
+        instructions::fund_reward_alpha::handler(
+            ctx,
+            fixed_rate_config,
+        )
+    }
+
+    pub fn cancel_reward_alpha(ctx: Context<CancelRewardAlpha>, _bump_auth: u8, _bump_pot: u8) -> Result<()> {
+        msg!("cancel reward alpha");
+        instructions::cancel_reward_alpha::handler(ctx)
+    }
+
     pub fn lock_reward(ctx: Context<LockReward>) -> Result<()> {
         msg!("lock reward");
         instructions::lock_reward::handler(ctx)
@@ -231,6 +302,15 @@ pub mod magic_stake {
         instructions::add_rarities_to_bank::handler(ctx, rarity_configs)
     }
 
+    pub fn create_alpha_tokenswap(ctx: Context<CreateAlphaTokenswap>, amount: u64) -> Result<()>{
+        msg!("Create alpha tokenswap config");
+        instructions::create_alpha_tokenswap::handler(ctx, amount)
+    }
+
+    pub fn transfer_alpha_tokens(ctx: Context<TransferAlphaTokens>, amount: u64) -> Result<()>{
+        msg!("Transfer tokenswap");
+        instructions::transfer_alpha_tokens::handler(ctx, amount)
+    }
     #[access_control(ctx.accounts.validate(&ctx, &params))]
     pub fn init_state(ctx: Context<InitState>, params: InitStateParams) -> Result<()> {
         InitState::actuate(&ctx, &params)

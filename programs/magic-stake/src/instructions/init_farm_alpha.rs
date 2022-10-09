@@ -4,7 +4,7 @@ use anchor_lang::prelude::*;
 use anchor_spl::token::{Mint, Token, TokenAccount};
 use gem_bank::{self, cpi::accounts::InitBank, program::GemBank};
 use gem_common::errors::ErrorCode;
-use std::str::FromStr;
+// use std::str::FromStr;
 
 
 pub const FEE_WALLET: &str = "Bi4UpEtKxnHwCw7b9xkMCouGT6xLNm8nixs2fTmxTevs"; //5th
@@ -12,7 +12,7 @@ pub const FEE_WALLET: &str = "Bi4UpEtKxnHwCw7b9xkMCouGT6xLNm8nixs2fTmxTevs"; //5
 
 #[derive(Accounts)]
 #[instruction(bump_auth: u8, bump_treasury: u8)]
-pub struct InitFarm<'info> {
+pub struct InitFarmAlpha<'info> {
     // farm
     #[account(init, payer = payer, space = 8 + std::mem::size_of::<Farm>())]
     pub farm: Box<Account<'info, Farm>>,
@@ -62,14 +62,14 @@ pub struct InitFarm<'info> {
     #[account(mut)]
     pub payer: Signer<'info>,
     /// CHECK:
-    #[account(mut, address = Pubkey::from_str(FEE_WALLET).unwrap())]
-    pub fee_acc: AccountInfo<'info>,
+    // #[account(mut, address = Pubkey::from_str(FEE_WALLET).unwrap())]
+    // pub fee_acc: AccountInfo<'info>,
     pub rent: Sysvar<'info, Rent>,
     pub token_program: Program<'info, Token>,
     pub system_program: Program<'info, System>,
 }
 
-impl<'info> InitFarm<'info> {
+impl<'info> InitFarmAlpha<'info> {
     fn init_bank_ctx(&self) -> CpiContext<'_, '_, '_, 'info, InitBank<'info>> {
         CpiContext::new(
             self.gem_bank.to_account_info(),
@@ -100,14 +100,11 @@ impl<'info> InitFarm<'info> {
 }
 
 pub fn handler(
-    ctx: Context<InitFarm>,
+    ctx: Context<InitFarmAlpha>,
     bump_auth: u8,
-    reward_type_a: RewardType,
-    lp_type: LPType,
     //    reward_type_b: RewardType,
     farm_config: FarmConfig,
     max_counts: Option<MaxCounts>,
-    _farm_treasury: Pubkey,
 ) -> Result<()> {
     //manually verify treasury
     // let (pk, _bump) = Pubkey::find_program_address(
@@ -137,10 +134,8 @@ pub fn handler(
 
     farm.reward_a.reward_mint = ctx.accounts.reward_a_mint.key();
     farm.reward_a.reward_pot = ctx.accounts.reward_a_pot.key();
-    farm.reward_a.reward_type = reward_type_a;
+    farm.reward_a.reward_type = RewardType::Fixed;
     farm.reward_a.fixed_rate_reward.schedule = FixedRateSchedule::default();
-    farm.lp_points.lp_type = lp_type;
-    farm.lp_points.lp_rate.lp_schedule = LPRateSchedule::default();
     // farm.reward_b.reward_mint = ctx.accounts.reward_b_mint.key();
     // farm.reward_b.reward_pot = ctx.accounts.reward_b_pot.key();
     // farm.reward_b.reward_type = reward_type_b;
@@ -151,8 +146,7 @@ pub fn handler(
     }
     msg!("Init farm: config {:?}", farm.config);
     msg!("Init farm: reward_a {:?}", farm.reward_a);
-    msg!("Init farm: lp_points {:?}", farm.lp_points);
-
+    
     //do a cpi call to start a new bank
     gem_bank::cpi::init_bank(
         ctx.accounts

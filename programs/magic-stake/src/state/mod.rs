@@ -4,6 +4,7 @@ pub mod farmer;
 pub mod fixed_rewards;
 pub mod loyalty_rewards;
 pub mod probable_rewards;
+pub mod alpha_token_swaps;
 // pub mod variable_rewards;
 pub mod vrf;
 
@@ -15,3 +16,4 @@ pub use loyalty_rewards::*;
 pub use probable_rewards::*;
 // pub use variable_rewards::*;
 pub use vrf::*;
+pub use alpha_token_swaps::*;

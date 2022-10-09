@@ -114,6 +114,19 @@ impl Farm {
         )
     }
 
+    pub fn fund_reward_by_mint_alpha(
+        &mut self,
+        now_ts: u64,
+        reward_mint: Pubkey,
+        fixed_rate_config: Option<FixedRateConfig>,
+    ) -> Result<()> {
+        let reward = self.match_reward_by_mint(reward_mint)?;
+        reward.fund_reward_by_type_alpha(
+            now_ts,
+            fixed_rate_config,
+        )
+    }
+
     pub fn cancel_reward_by_mint(&mut self, now_ts: u64, reward_mint: Pubkey) -> Result<u64> {
         let reward = self.match_reward_by_mint(reward_mint)?;
         reward.cancel_reward_by_type(now_ts)
