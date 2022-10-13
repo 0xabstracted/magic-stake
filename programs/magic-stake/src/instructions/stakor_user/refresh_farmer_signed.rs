@@ -28,7 +28,7 @@ pub fn handler(ctx: Context<RefreshFarmerSigned>, reenroll: bool) -> Result<()> 
     let now_ts = now_ts()?;
 
     farm.update_rewards(now_ts, Some(farmer), reenroll)?;
-    farm.update_lp_points(now_ts, Some(farmer), true)?;
+    // farm.update_lp_points(now_ts, Some(farmer), true)?;
     msg!("{} farmer refreshed (SIGNED)", farmer.key());
     Ok(())
 }

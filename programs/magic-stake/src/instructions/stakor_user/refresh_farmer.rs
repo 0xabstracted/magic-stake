@@ -29,7 +29,7 @@ pub fn handler(ctx: Context<RefreshFarmer>) -> Result<()> {
     let now_ts = now_ts()?;
 
     farm.update_rewards(now_ts, Some(farmer), true)?;
-    farm.update_lp_points(now_ts, Some(farmer), true)?;
+    // farm.update_lp_points(now_ts, Some(farmer), true)?;
     msg!("{} farmer refreshed", farmer.key());
     Ok(())
 }

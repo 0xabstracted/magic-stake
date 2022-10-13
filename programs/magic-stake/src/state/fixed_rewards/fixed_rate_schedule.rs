@@ -3,7 +3,7 @@ use crate::state::tier_config::*;
 use anchor_lang::prelude::*;
 use gem_common::{TryAdd, TryDiv, TryMul, TrySub};
 
-#[proc_macros::assert_size(88)]
+#[proc_macros::assert_size(104)]
 #[repr(C)]
 #[derive(Debug, Copy, Clone, AnchorDeserialize, AnchorSerialize)]
 pub struct FixedRateSchedule {
@@ -14,6 +14,8 @@ pub struct FixedRateSchedule {
     /// needed to slowout the payout schedule (else min would be 1 token/rarity_point/sec or 86k/rairty_point/day)
     /// Only used in fixed rate, in variable overall duration serves as sufficient speed regulator
     pub denominator: u64,
+    pub number_of_nfts: u64,
+    pub extra_reward: u64,
 }
 
 /// custom impl of Defualt  becauase denominator cannot be 0 by default
@@ -25,6 +27,8 @@ impl Default for FixedRateSchedule {
             tier2: None,
             tier3: None,
             denominator: 1,
+            number_of_nfts: 0,
+            extra_reward: 0,
         }
     }
 }
@@ -76,6 +80,9 @@ impl FixedRateSchedule {
     }
 
     pub fn get_base_reward(&self, start: u64, end: u64) -> Result<u64> {
+        // let multy = rarity_points.try_div(self.number_of_nfts)?;
+        // let multiplier = multy.try_mul(self.number_of_nfts)?.try_div(self.promised_schedule.denominator)?;
+        
         let duration = end.try_sub(start)?;
         self.base_rate.try_mul(duration)
     }
@@ -116,11 +123,24 @@ impl FixedRateSchedule {
     }
 
     pub fn reward_amount(&self, start_from: u64, end_at: u64, rarity_points: u64) -> Result<u64> {
+
         let per_rarity_point = self.reward_per_rarity_point(start_from, end_at)?;
-        msg!("reward_amount \t rarity_points:{}",rarity_points);
+        msg!("rarity_points:{}",rarity_points);
         msg!("per_rarity_point:{}",per_rarity_point);
-        rarity_points
-            .try_mul(per_rarity_point)?
-            .try_div(self.denominator)
+                if self.extra_reward == 0{
+                    rarity_points
+                        .try_mul(per_rarity_point)?
+                        .try_div(self.denominator)
+                }
+                else{
+                    let multy = rarity_points.try_div(self.number_of_nfts)?;
+                    let multiplier = multy.try_mul(self.number_of_nfts)?.try_mul(self.extra_reward)?;
+                    let rarity_points_new = rarity_points.try_mul(per_rarity_point)?;
+                    let rarity_points_new1 = rarity_points_new.try_add(multiplier)?;
+                    msg!("rarity_points_new:{}",rarity_points_new);
+                    msg!("rarity_points_new1:{}",rarity_points_new1);
+                    rarity_points_new1.try_div(self.denominator)
+                }
+                    
     }
 }

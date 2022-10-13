@@ -88,7 +88,7 @@ pub fn handler(ctx: Context<Unstake>, skip_rewards: bool) -> Result<()> {
     // at least this lets them get their assets out
     if !skip_rewards {
         farm.update_rewards(now_ts, Some(farmer), false)?;
-        farm.update_lp_points(now_ts, Some(farmer), false)?;
+        // farm.update_lp_points(now_ts, Some(farmer), false)?;
     }
     // end staking (will cycle through state on repeated calls)
     farm.end_staking(now_ts, farmer)?;

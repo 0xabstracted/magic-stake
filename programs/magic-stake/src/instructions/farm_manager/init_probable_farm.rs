@@ -68,7 +68,7 @@ impl<'info> InitProbableFarm<'info> {
 pub fn handler(
     ctx: Context<InitProbableFarm>,
     bump_auth: u8,
-    lp_type: LPType,
+    // lp_type: LPType,
     farm_config: FarmConfig,
     max_counts: Option<MaxCounts>,
 ) -> Result<()> {
@@ -92,15 +92,15 @@ pub fn handler(
     farm.reward_a.reward_pot = ctx.accounts.reward_a_pot.key();
     farm.reward_a.reward_type = RewardType::Probable;
     farm.reward_a.probable_rate_reward.probable_schedule = ProbableRateSchedule::default();
-    farm.lp_points.lp_type = lp_type;
-    farm.lp_points.lp_rate.lp_schedule = LPRateSchedule::default();
+    // farm.lp_points.lp_type = lp_type;
+    // farm.lp_points.lp_rate.lp_schedule = LPRateSchedule::default();
     
     if let Some(max_counts) = max_counts {
         farm.max_counts = max_counts;
     }
     msg!("Init farm: config {:?}", farm.config);
     msg!("Init farm: reward_a.probable_rate_reward {:?}", farm.reward_a.probable_rate_reward);
-    msg!("Init farm: lp_points {:?}", farm.lp_points);
+    // msg!("Init farm: lp_points {:?}", farm.lp_points);
 
     //do a cpi call to start a new bank
     gem_bank::cpi::init_bank(

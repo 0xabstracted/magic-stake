@@ -1,4 +1,4 @@
-use crate::state::{AuthorizationProof, Farm, FixedRateConfig, ProbableRateConfig, LPRateConfig};
+use crate::state::{AuthorizationProof, Farm, FixedRateConfig};
 use anchor_lang::prelude::*;
 use anchor_spl::token::{self, Mint, Token, TokenAccount, Transfer};
 use gem_common::now_ts;
@@ -55,25 +55,22 @@ pub fn handler(
     ctx: Context<FundReward>,
 //    variable_rate_config: Option<VariableRateConfig>,
     fixed_rate_config: Option<FixedRateConfig>,
-    probable_rate_config: Option<ProbableRateConfig>,
-    lp_rate_config: Option<LPRateConfig>,
+    // probable_rate_config: Option<ProbableRateConfig>,
+    // lp_rate_config: Option<LPRateConfig>,
 ) -> Result<()> {
-    let amount = if let Some(_config) = fixed_rate_config {
-        fixed_rate_config.unwrap().amount
-    } else {
-        probable_rate_config.unwrap().probable_amount
-    };
+    let amount = fixed_rate_config.unwrap().amount;
     let farm = &mut ctx.accounts.farm;
     let now_ts = now_ts()?;
     farm.update_rewards(now_ts, None, true)?;
-    farm.update_lp_points(now_ts, None, true)?;
-    farm.start_lp_by_type(now_ts, lp_rate_config)?;
+    // farm.update_lp_points(now_ts, None, true)?;
+    // farm.start_lp_by_type(now_ts, lp_rate_config)?;
     farm.fund_reward_by_mint(
         now_ts, 
         ctx.accounts.reward_mint.key(), 
       //  variable_rate_config, 
-        fixed_rate_config, 
-        probable_rate_config,
+        fixed_rate_config,
+        
+        // probable_rate_config,
     )?;
 
     // do the transfer
@@ -84,7 +81,7 @@ pub fn handler(
         amount,
     )?;
     msg!("fixed_rate_config {:?}", fixed_rate_config);
-    msg!("probable_rate_config {:?}", probable_rate_config);
+    // msg!("probable_rate_config {:?}", probable_rate_config);
     msg!(
         "{} reward tokens deposited into {} pot",
         amount,

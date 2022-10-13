@@ -1,10 +1,8 @@
-pub mod alpha_staking;
 pub mod alpha_tokenswap;
 pub mod farm_manager;
 pub mod stakor_user;
 pub mod common;
 
-pub use alpha_staking::*;
 pub use alpha_tokenswap::*;
 pub use farm_manager::*;
 pub use stakor_user::*;

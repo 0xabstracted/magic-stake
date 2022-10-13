@@ -124,16 +124,16 @@ pub enum ErrorCode {
     #[msg("unknown LP type")]
     UnknownLPType, // 0x17ad,
     #[msg("LP locked")]
-    LPLocked, // 0x17ae
+    LPLocked, // 0x17ae 6062
     #[msg("Not a valid Switchboard VRF account")]
-    InvalidSwitchboardVrfAccount,
+    InvalidSwitchboardVrfAccount, //6063
     #[msg("The max result must not exceed u64")]
-    MaxResultExceedsMaximum,
+    MaxResultExceedsMaximum, //6064
     #[msg("Current round result is empty")]
-    EmptyCurrentRoundResult,
+    EmptyCurrentRoundResult, //6065
     #[msg("Invalid authority account provided.")]
-    InvalidAuthorityError,
+    InvalidAuthorityError, //6066
     #[msg("Swapping pot is empty.")]
-    EmptySwapPot,
+    EmptySwapPot, //6067
 
 }

@@ -1,7 +1,7 @@
 use crate::state::fixed_rewards::fixed_rate_schedule::*;
 use anchor_lang::prelude::*;
 
-#[proc_macros::assert_size(104)]
+#[proc_macros::assert_size(120)]
 #[repr(C)]
 #[derive(Debug, Clone, Copy, AnchorDeserialize, AnchorSerialize)]
 pub struct FixedRateConfig {
@@ -14,4 +14,5 @@ pub struct FixedRateConfig {
     /// Every farmer enrolled to the farm will be reserved an amount of reward tokens for the schedule
     /// of the duration
     pub duration_sec: u64,
+
 }

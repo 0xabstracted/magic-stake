@@ -133,10 +133,10 @@ pub fn handler<'a, 'b, 'c, 'info>(
     let now_ts = now_ts()?;
         farm.update_rewards(now_ts, Some(farmer), true)?;
 
-        farm.update_lp_points(now_ts, Some(farmer), true)?;
+        // farm.update_lp_points(now_ts, Some(farmer), true)?;
     msg!("handler \t farmer.gems_staked:{}", farmer.gems_staked);
     msg!("handler \t farmer.reward_a.fixed_rate:{:?}", farmer.reward_a.fixed_rate);
-    msg!("handler \t farmer.lp_points.lp_rate:{:?}", farmer.lp_points.lp_rate);
+    // msg!("handler \t farmer.lp_points.lp_rate:{:?}", farmer.lp_points.lp_rate);
     
     ctx.accounts.vault.reload()?;
     if farmer.gems_staked == 0 {

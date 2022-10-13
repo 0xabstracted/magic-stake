@@ -5,7 +5,7 @@ use gem_bank::{self, cpi::accounts::InitBank, program::GemBank};
 use gem_common::errors::ErrorCode;
 
 #[derive(Accounts)]
-#[instruction(bump_auth: u8, bump_treasury: u8)]
+#[instruction(bump_auth: u8)]
 pub struct InitFixedFarm<'info> {
     // farm
     #[account(init, payer = payer, space = 8 + std::mem::size_of::<Farm>())]
@@ -68,22 +68,34 @@ impl<'info> InitFixedFarm<'info> {
 pub fn handler(
     ctx: Context<InitFixedFarm>,
     bump_auth: u8,
-    lp_type: LPType,
+    //    reward_type_b: RewardType,
     farm_config: FarmConfig,
     max_counts: Option<MaxCounts>,
+    farm_treasury_token: Pubkey,
 ) -> Result<()> {
+    //record new farm details
+    let farm = &mut ctx.accounts.farm;
     
+    // manually verify treasury
+    let (pk, _bump) = Pubkey::find_program_address(
+        &[b"token_treasury".as_ref(),
+        farm.key().as_ref()
+        ],
+        ctx.program_id,
+    );
+    if farm_treasury_token.key() != pk {
+        return Err(error!(ErrorCode::InvalidParameter));
+    }
+
     if farm_config.unstaking_fee_percent > 100 {
         return Err(error!(ErrorCode::InvalidUnstakingFee));
     }
 
-    //record new farm details
-    let farm = &mut ctx.accounts.farm;
-
+    
     farm.version = LATEST_FARM_VERSION;
     farm.farm_manager = ctx.accounts.farm_manager.key();
-    //    farm.farm_treasury = farm_treasury;
-    farm.farm_treasury_token = ctx.accounts.farm_treasury_token.key();
+    farm.farm_treasury_token = farm_treasury_token;
+    // farm.farm_treasury = ctx.accounts.farm_treasury_token.key();
     farm.farm_authority = ctx.accounts.farm_authority.key();
     farm.farm_authority_seed = farm.key();
     farm.farm_authority_bump_seed = [bump_auth];
@@ -94,22 +106,24 @@ pub fn handler(
     farm.reward_a.reward_pot = ctx.accounts.reward_a_pot.key();
     farm.reward_a.reward_type = RewardType::Fixed;
     farm.reward_a.fixed_rate_reward.schedule = FixedRateSchedule::default();
-    farm.lp_points.lp_type = lp_type;
-    farm.lp_points.lp_rate.lp_schedule = LPRateSchedule::default();
-    
+    // farm.reward_b.reward_mint = ctx.accounts.reward_b_mint.key();
+    // farm.reward_b.reward_pot = ctx.accounts.reward_b_pot.key();
+    // farm.reward_b.reward_type = reward_type_b;
+    // farm.reward_b.fixed_rate_reward.schedule = FixedRateSchedule::default();
+
     if let Some(max_counts) = max_counts {
         farm.max_counts = max_counts;
     }
     msg!("Init farm: config {:?}", farm.config);
     msg!("Init farm: reward_a {:?}", farm.reward_a);
-    msg!("Init farm: lp_points {:?}", farm.lp_points);
-
+    
     //do a cpi call to start a new bank
     gem_bank::cpi::init_bank(
         ctx.accounts
             .init_bank_ctx()
             .with_signer(&[&ctx.accounts.farm.farm_seeds()]),
     )?;
+    // ctx.accounts.transfer_fee()?;
     //msg!("new farm initialized");
     Ok(())
 }

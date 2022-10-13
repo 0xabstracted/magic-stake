@@ -1,7 +1,7 @@
 use crate::state::Farm;
 use crate::state::Farmer;
 use crate::state::ProbableRateSchedule;
-use crate::state::LPRateSchedule;
+// use crate::state::LPRateSchedule;
 use anchor_lang::prelude::*;
 use gem_bank::{self, cpi::accounts::InitVault, program::GemBank, state::Bank};
 use gem_common::TryAdd;
@@ -63,13 +63,13 @@ pub fn handler(ctx: Context<InitProbableFarmer>) -> Result<()> {
     farmer.identity = ctx.accounts.identity.key();
     farmer.vault = ctx.accounts.vault.key();
     farmer.reward_a.probable_rate.promised_probable_schedule = ProbableRateSchedule::default();
-    farmer.lp_points.lp_rate.lp_promised_schedule = LPRateSchedule::default();
+    // farmer.lp_points.lp_rate.lp_promised_schedule = LPRateSchedule::default();
 
     // update farm
     let farm = &mut ctx.accounts.farm;
     farm.farmer_count.try_add_assign(1)?;
     msg!("farmer.reward_a {:?}", farmer.reward_a);
-    msg!("farmer.lp_points {:?}", farmer.lp_points);
+    // msg!("farmer.lp_points {:?}", farmer.lp_points);
     // do a cpi call to start a new vault
     let vault_owner = ctx.accounts.identity.key();
     let vault_name = String::from("farm_vault");
