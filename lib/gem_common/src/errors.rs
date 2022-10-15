@@ -135,5 +135,8 @@ pub enum ErrorCode {
     InvalidAuthorityError, //6066
     #[msg("Swapping pot is empty.")]
     EmptySwapPot, //6067
-
+    #[msg("Not enough Space for Staked Mint address.")]
+    NotEnoughSpaceForStakedMint,
+    #[msg("Max FSM accounts Reached.")]
+    MaxFSMAccountCountReached,
 }

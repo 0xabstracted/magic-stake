@@ -2,10 +2,13 @@
 use crate::state::farmer::farmer_reward::*;
 use crate::state::farmer::farmer_state::*;
 use anchor_lang::prelude::*;
+use gem_common::TrySub;
 use gem_common::errors::ErrorCode;
 use gem_common::TryAdd;
 
-#[proc_macros::assert_size(536)]
+const MAX_FSM_ACCOUNTS: usize = 21;
+
+#[proc_macros::assert_size(1216)]
 #[repr(C)]
 #[account]
 #[derive(Debug)]
@@ -27,10 +30,44 @@ pub struct Farmer {
     pub reward_a: FarmerReward, //384 352
     //    pub reward_b: FarmerReward, //384
     // pub lp_points: FarmerLPPoints, //160
+    pub no_fsm_accounts : u64,
+    pub fsm_account_keys: [Pubkey; MAX_FSM_ACCOUNTS],
     _reserved: [u8; 32],           //32
 }
 
 impl Farmer {
+    pub fn append_fsm(&mut self, fsm_account_address: Pubkey) -> Result<()> {
+        if self.no_fsm_accounts >= MAX_FSM_ACCOUNTS as u64 {
+            return Err(error!(ErrorCode::MaxFSMAccountCountReached));
+        }
+        let default_staked_mint: Pubkey = Pubkey::default();
+        for i in 0..MAX_FSM_ACCOUNTS{
+            if self.fsm_account_keys[i] == default_staked_mint && 
+                self.fsm_account_keys[i] != fsm_account_address &&
+                fsm_account_address!= default_staked_mint
+            {
+                self.fsm_account_keys[i] = fsm_account_address;
+                self.no_fsm_accounts.try_add(1)?;
+            }
+        }
+        Ok(())
+    }
+    pub fn remove_fsm(&mut self, fsm_account_address: Pubkey) -> Result<()> {
+        if self.no_fsm_accounts >= MAX_FSM_ACCOUNTS as u64 {
+            return Err(error!(ErrorCode::MaxFSMAccountCountReached));
+        }
+        let default_staked_mint: Pubkey = Pubkey::default();
+        for i in 0..MAX_FSM_ACCOUNTS{
+            if self.fsm_account_keys[i] == fsm_account_address && 
+                fsm_account_address!= default_staked_mint
+            {
+                self.fsm_account_keys[i] = default_staked_mint;
+                self.no_fsm_accounts.try_sub(1)?;
+            }
+        }
+        Ok(())
+    }
+
     pub fn begin_staking(
         &mut self,
         min_staking_period_sec: u64,

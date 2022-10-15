@@ -7,6 +7,7 @@ pub mod probable_rewards;
 pub mod alpha_token_swaps;
 // pub mod variable_rewards;
 pub mod vrf;
+pub mod farmer_staked_mints;
 
 pub use authorization_proof::*;
 pub use farm::*;
@@ -17,3 +18,4 @@ pub use probable_rewards::*;
 // pub use variable_rewards::*;
 pub use vrf::*;
 pub use alpha_token_swaps::*;
+pub use farmer_staked_mints::*;

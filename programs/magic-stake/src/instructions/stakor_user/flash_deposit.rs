@@ -1,5 +1,6 @@
 use crate::state::Farm;
 use crate::state::Farmer;
+use crate::state::FarmerStakedMints;
 use anchor_lang::prelude::*;
 //use anchor_lang::solana_program::{system_instruction, program::invoke};
 use anchor_spl::token::{Mint, Token, TokenAccount};
@@ -10,6 +11,7 @@ use gem_bank::{
     program::GemBank,
     state::{Bank, Vault},
 };
+use gem_common::TryAdd;
 use gem_common::now_ts;
 // use std::str::FromStr;
 // use crate::instructions::FEE_WALLET;
@@ -17,7 +19,7 @@ use gem_common::now_ts;
 // const FD_FEE_LAMPORTS: u64 = 1_000_000; // half of that for FDs
 
 #[derive(Accounts)]
-#[instruction(bump_farmer: u8)]
+#[instruction(bump_farmer: u8, bump_farmer_staked_mints: u8, index: u32)]
 pub struct FlashDeposit<'info> {
     // farm
     #[account(mut, has_one = farm_authority)]
@@ -35,6 +37,18 @@ pub struct FlashDeposit<'info> {
         ],
         bump = bump_farmer)]
     pub farmer: Box<Account<'info, Farmer>>,
+    #[account(
+        mut,
+        seeds = [
+            b"farmer_staked_mints".as_ref(), 
+            &index.to_le_bytes(),
+            farmer.key().as_ref(),
+        ],
+        bump = farmer_staked_mints.load()?.bump,
+        has_one = farmer,
+    )]
+    pub farmer_staked_mints: AccountLoader<'info, FarmerStakedMints>,
+    
     #[account(mut)]
     pub identity: Signer<'info>,
 
@@ -105,6 +119,7 @@ pub fn handler<'a, 'b, 'c, 'info>(
     ctx: Context<'a, 'b, 'c, 'info, FlashDeposit<'info>>,
     bump_vault_auth: u8,
     bump_rarity: u8,
+    index: u32,
     amount: u64,
 ) -> Result<()> {
     // flash deposit a gem into a locked vault
@@ -157,6 +172,12 @@ pub fn handler<'a, 'b, 'c, 'info>(
             farmer,
         )?;
     } 
+    let mut farmer_staked_mints = ctx.accounts.farmer_staked_mints.load_mut()?;
+    farmer_staked_mints.no_of_nfts_staked.try_add(amount)?;
+    farmer_staked_mints.index = index;
+    for _ in 0..amount{
+        farmer_staked_mints.append_nft(ctx.accounts.gem_mint.key())?;
+    }
     //msg!("{} extra gems staked for {}", amount, farmer.key());
     Ok(())
 }

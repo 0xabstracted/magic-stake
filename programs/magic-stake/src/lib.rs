@@ -2,12 +2,10 @@ use anchor_lang::prelude::*;
 pub mod instructions;
 pub mod number128;
 pub mod state;
-pub mod vrf_actions;
 
 use gem_bank::instructions::record_rarity_points::RarityConfig;
 use instructions::*;
 use state::*;
-use vrf_actions::*;
 
 declare_id!("45eAzw1V8BPznoTejeqtMvNP6suKDn9NWs4t5gRyK9TM");
 
@@ -91,9 +89,9 @@ pub mod magic_stake {
     //     msg!("init farmer");
     //     instructions::init_farmer::handler(ctx)
     // }
-    pub fn init_fixed_farmer(ctx: Context<InitFixedFarmer>) -> Result<()> {
+    pub fn init_fixed_farmer(ctx: Context<InitFixedFarmer>, index: u32) -> Result<()> {
         msg!("init farmer fixed");
-        instructions::init_fixed_farmer::handler(ctx)
+        instructions::init_fixed_farmer::handler(ctx, index)
     }
     pub fn init_probable_farmer(ctx: Context<InitProbableFarmer>) -> Result<()> {
         msg!("init farmer probable");
@@ -107,13 +105,18 @@ pub mod magic_stake {
     
     pub fn unstake(
         ctx: Context<Unstake>,
-        _bump_auth: u8,
+        bump_auth: u8,
         _bump_treasury_token: u8,
         _bump_farmer: u8,
+        bump_gem_box: u8,
+        bump_gdr:u8,
+        bump_rarity: u8,
+        amount: u64,
+        index: u32,
         skip_rewards: bool,
     ) -> Result<()> {
         msg!("unstake");
-        instructions::unstake::handler(ctx, skip_rewards)
+        instructions::unstake::handler(ctx, skip_rewards, bump_auth, bump_gem_box, bump_gdr, bump_rarity, amount, index)
     }
 
     pub fn claim(
@@ -132,10 +135,11 @@ pub mod magic_stake {
         _bump_farmer: u8,
         bump_vault_auth: u8,
         bump_rarity: u8,
+        index: u32,
         amount: u64,
     ) -> Result<()> {
         // msg!("flash deposit"); //have to remove all msgs! or run out of compute budget for this ix
-        instructions::flash_deposit::handler(ctx, bump_vault_auth, bump_rarity, amount)
+        instructions::flash_deposit::handler(ctx, bump_vault_auth, bump_rarity, index, amount)
     }
 
     pub fn refresh_farmer(ctx: Context<RefreshFarmer>, _bump: u8) -> Result<()> {
