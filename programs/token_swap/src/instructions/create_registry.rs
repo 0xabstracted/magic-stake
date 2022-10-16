@@ -7,7 +7,7 @@ use crate::Registry;
 pub struct CreateRegistry<'info> {
     #[account(
         init,
-        seeds = ["registry".as_ref(), admin.key().as_ref()],
+        seeds = ["registry".as_ref(), admin.key().as_ref(), mint_token_in.key().as_ref(), mint_token_out.key().as_ref()],
         bump,
         space = 8 + std::mem::size_of::<Registry>(),
         payer = admin,
