@@ -387,11 +387,6 @@
           "isSigner": false
         },
         {
-          "name": "farmerStakedMints",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
           "name": "identity",
           "isMut": false,
           "isSigner": true
@@ -550,11 +545,6 @@
         },
         {
           "name": "farmer",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "farmerStakedMints",
           "isMut": true,
           "isSigner": false
         },
@@ -761,11 +751,6 @@
         },
         {
           "name": "farmer",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "farmerStakedMints",
           "isMut": true,
           "isSigner": false
         },

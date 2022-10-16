@@ -37,17 +37,17 @@ pub struct FlashDeposit<'info> {
         ],
         bump = bump_farmer)]
     pub farmer: Box<Account<'info, Farmer>>,
-    #[account(
-        mut,
-        seeds = [
-            b"farmer_staked_mints".as_ref(), 
-            &index.to_le_bytes(),
-            farmer.key().as_ref(),
-        ],
-        bump = farmer_staked_mints.load()?.bump,
-        has_one = farmer,
-    )]
-    pub farmer_staked_mints: AccountLoader<'info, FarmerStakedMints>,
+    // #[account(
+    //     mut,
+    //     seeds = [
+    //         b"farmer_staked_mints".as_ref(), 
+    //         &index.to_le_bytes(),
+    //         farmer.key().as_ref(),
+    //     ],
+    //     bump = farmer_staked_mints.load()?.bump,
+    //     has_one = farmer,
+    // )]
+    // pub farmer_staked_mints: AccountLoader<'info, FarmerStakedMints>,
     
     #[account(mut)]
     pub identity: Signer<'info>,
@@ -172,12 +172,12 @@ pub fn handler<'a, 'b, 'c, 'info>(
             farmer,
         )?;
     } 
-    let mut farmer_staked_mints = ctx.accounts.farmer_staked_mints.load_mut()?;
-    farmer_staked_mints.no_of_nfts_staked.try_add(amount)?;
-    farmer_staked_mints.index = index;
-    for _ in 0..amount{
-        farmer_staked_mints.append_nft(ctx.accounts.gem_mint.key())?;
-    }
+    // let mut farmer_staked_mints = ctx.accounts.farmer_staked_mints.load_mut()?;
+    // farmer_staked_mints.no_of_nfts_staked.try_add(amount)?;
+    // farmer_staked_mints.index = index;
+    // for _ in 0..amount{
+    //     farmer_staked_mints.append_nft(ctx.accounts.gem_mint.key())?;
+    // }
     //msg!("{} extra gems staked for {}", amount, farmer.key());
     Ok(())
 }
