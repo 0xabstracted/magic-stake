@@ -51,9 +51,9 @@ impl FarmerFixedRateReward {
         let end_at = self
             .end_schedule_ts()?
             .try_sub(self.begin_staking_ts)?;
-        msg!("voided_reward \t start_from:{}",start_from);
-        msg!("rarity_points:{}",rarity_points);
-        msg!("voided_reward \t end_at:{}",end_at);
+        // msg!("voided_reward \t start_from:{}",start_from);
+        // msg!("rarity_points:{}",rarity_points);
+        // msg!("voided_reward \t end_at:{}",end_at);
         self.promised_schedule
             .reward_amount(start_from, end_at, rarity_points)
     }
@@ -63,9 +63,9 @@ impl FarmerFixedRateReward {
         let end_at = self
             .reward_upper_bound(now_ts)?
             .try_sub(self.begin_staking_ts)?;
-        msg!("newly_accrued_reward ");
-        msg!("start_from:{}",start_from);
-        msg!("end_at:{}",end_at);
+        // msg!("newly_accrued_reward ");
+        // msg!("start_from:{}",start_from);
+        // msg!("end_at:{}",end_at);
         self.promised_schedule
             .reward_amount(start_from, end_at, rarity_points)
     }

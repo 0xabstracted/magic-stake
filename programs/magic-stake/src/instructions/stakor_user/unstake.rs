@@ -39,17 +39,18 @@ pub struct Unstake<'info> {
         ],
         bump = bump_farmer)]
     pub farmer: Box<Account<'info, Farmer>>,
-    // #[account(
-    //     mut,
-    //     seeds = [
-    //         b"farmer_staked_mints".as_ref(), 
-    //         &index.to_le_bytes(),
-    //         farmer.key().as_ref(),
-    //     ],
-    //     bump = farmer_staked_mints.load()?.bump,
-    //     has_one = farmer,
-    // )]
-    // pub farmer_staked_mints: AccountLoader<'info, FarmerStakedMints>,
+    #[account(
+        mut,
+        seeds = [
+            b"farmer_staked_mints".as_ref(), 
+            // &index.to_le_bytes(),
+            farmer.key().as_ref(),
+        ],
+        bump = farmer_staked_mints.load()?.bump,
+        has_one = farmer,
+    )]
+    // #[account(mut)]
+    pub farmer_staked_mints: AccountLoader<'info, FarmerStakedMints>,
     #[account(mut)]
     pub identity: Signer<'info>,
 
@@ -182,12 +183,12 @@ pub fn handler(ctx: Context<Unstake>,
             amount,
         )?;
     }
-    // let mut farmer_staked_mints = ctx.accounts.farmer_staked_mints.load_mut()?;
-    // if farmer_staked_mints.index == index {
-    //     for _ in 0..amount{
-    //         farmer_staked_mints.remove_nft(ctx.accounts.gem_mint.key())?;
-    //     }
-    // }
+    let mut farmer_staked_mints = ctx.accounts.farmer_staked_mints.load_mut()?;
+    if farmer_staked_mints.index == index {
+        for _ in 0..amount{
+            farmer_staked_mints.remove_nft(ctx.accounts.gem_mint.key())?;
+        }
+    }
     // if farmer_staked_mints.no_of_nfts_staked == 0 {
     //     close_account(farmer_staked_mints, &mut ctx.accounts.identity.to_account_info())?;
     // }

@@ -25,18 +25,20 @@ pub struct InitFixedFarmer<'info> {
         payer = payer,
         space = 8 + std::mem::size_of::<Farmer>())]
     pub farmer: Box<Account<'info, Farmer>>,
-    // #[account(
-    //     init,
-    //     seeds = [
-    //         b"farmer_staked_mints".as_ref(), 
-    //         &index.to_le_bytes(),
-    //         farmer.key().as_ref(),
-    //     ],
-    //     payer = payer,
-    //     space = 8 + std::mem::size_of::<FarmerStakedMints>(),
-    //     bump,
-    // )]
-    // pub farmer_staked_mints: AccountLoader<'info, FarmerStakedMints>,
+    #[account(
+        init,
+        seeds = [
+            b"farmer_staked_mints".as_ref(), 
+            // &index.to_le_bytes(),
+            farmer.key().as_ref(),
+        ],
+        bump,
+        payer = payer,
+        space = 8 + std::mem::size_of::<FarmerStakedMints>(),
+        // owner = *program_id,
+    )]
+    // #[account(zero)]
+    pub farmer_staked_mints: AccountLoader<'info, FarmerStakedMints>,
     pub identity: Signer<'info>,
 
     // cpi
@@ -77,28 +79,29 @@ pub fn handler(ctx: Context<InitFixedFarmer>, _index: u32) -> Result<()> {
     farmer.identity = ctx.accounts.identity.key();
     farmer.vault = ctx.accounts.vault.key();
     farmer.reward_a.fixed_rate.promised_schedule = FixedRateSchedule::default();
-    // farmer.append_fsm(ctx.accounts.farmer_staked_mints.key())?;
+    farmer.append_fsm(ctx.accounts.farmer_staked_mints.key())?;
     // farmer.lp_points.lp_rate.lp_promised_schedule = LPRateSchedule::default();
 
     // update farm
     let farm = &mut ctx.accounts.farm;
     farm.farmer_count.try_add_assign(1)?;
-    msg!("farmer.reward_a {:?}", farmer.reward_a);
+    // msg!("farmer.reward_a {:?}", farmer.reward_a);
     // msg!("farmer.lp_points {:?}", farmer.lp_points);
     // do a cpi call to start a new vault
     let vault_owner = ctx.accounts.identity.key();
     let vault_name = String::from("farm_vault");
     gem_bank::cpi::init_vault(ctx.accounts.init_vault_ctx(), vault_owner, vault_name)?;
-    // let mut farmer_staked_mints = ctx.accounts.farmer_staked_mints.load_init()?;
-    // farmer_staked_mints.no_of_nfts_staked = 0;
-    // farmer_staked_mints.bump = ctx.bumps.get("farmer_staked_mints").unwrap().clone();
-    // farmer_staked_mints.farmer = ctx.accounts.farmer.key();
-    // farmer_staked_mints.index = 0;
-    // // farmer_staked_mints.index = index;
+    let mut farmer_staked_mints = ctx.accounts.farmer_staked_mints.load_init()?;
+    // let mut farmer_staked_mints = ctx.accounts.farmer_staked_mints;
+    farmer_staked_mints.no_of_nfts_staked = 0;
+    farmer_staked_mints.bump = ctx.bumps.get("farmer_staked_mints").unwrap().clone();
+    farmer_staked_mints.farmer = ctx.accounts.farmer.key();
+    farmer_staked_mints.index = 0;
+    // farmer_staked_mints.index = index;
     // let default_staked_mint: Pubkey = Pubkey::default();
     // for _ in 0..MAX_NFTS_ALLOWED{
     //     farmer_staked_mints.append_nft(default_staked_mint)?;
     // }
-    msg!("new fixed farmer initialized");
+    // msg!("new fixed farmer initialized");
     Ok(())
 }

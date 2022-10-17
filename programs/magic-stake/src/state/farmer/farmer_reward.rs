@@ -27,10 +27,10 @@ impl FarmerReward {
     pub fn claim_reward(&mut self, pot_balance: u64) -> Result<u64> {
         let outstanding = self.outstanding_reward()?;
         let to_claim = std::cmp::min(outstanding, pot_balance);
-        msg!("FarmerReward claim_reward \t outstanding: {}",outstanding);
-        msg!("FarmerReward claim_reward \t to_claim: {}",to_claim);
+        // msg!("FarmerReward claim_reward \t outstanding: {}",outstanding);
+        // msg!("FarmerReward claim_reward \t to_claim: {}",to_claim);
         self.paid_out_reward.try_add_assign(to_claim)?;
-        msg!("FarmerReward claim_reward \t self.paid_out_reward: {}",self.paid_out_reward);
+        // msg!("FarmerReward claim_reward \t self.paid_out_reward: {}",self.paid_out_reward);
 
         Ok(to_claim)
     }
@@ -48,9 +48,9 @@ impl FarmerReward {
 
     pub fn update_fixed_reward(&mut self, now_ts: u64, newly_accrued_reward: u64) -> Result<()> {
         self.accrued_reward.try_add_assign(newly_accrued_reward)?;
-        msg!("FarmerReward update_fixed_reward \t self.accrued_reward: {}",self.accrued_reward);
+        // msg!("FarmerReward update_fixed_reward \t self.accrued_reward: {}",self.accrued_reward);
         self.fixed_rate.last_updated_ts = self.fixed_rate.reward_upper_bound(now_ts)?;
-        msg!("FarmerReward update_fixed_reward \t self.fixed_rate.last_updated_ts: {:?}",self.fixed_rate.last_updated_ts);
+        // msg!("FarmerReward update_fixed_reward \t self.fixed_rate.last_updated_ts: {:?}",self.fixed_rate.last_updated_ts);
         Ok(())
     }
     pub fn update_probable_reward(&mut self, now_ts: u64, newly_accrued_reward: u64) -> Result<()> {

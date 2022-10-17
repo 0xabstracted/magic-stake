@@ -6,7 +6,9 @@ use gem_common::{errors::ErrorCode, TryAdd, TrySub, close_account};
 pub const MAX_NFTS_ALLOWED: usize = 200;
 
 // pub const default_staked_mint: Pubkey = Pubkey::default();
+pub const default_staked_mint: Pubkey = Pubkey::new_from_array([0; 32]);
 
+// #[account]
 #[account(zero_copy)]
 #[derive(Debug)]
 pub struct FarmerStakedMints {
@@ -14,6 +16,7 @@ pub struct FarmerStakedMints {
     pub farmer: Pubkey,
     pub index: u32,
     pub no_of_nfts_staked: u64,
+    // pub farmer_staked_mints: [String; MAX_NFTS_ALLOWED],
     pub farmer_staked_mints: [Pubkey; MAX_NFTS_ALLOWED],
 }
 
@@ -22,11 +25,11 @@ impl FarmerStakedMints {
         if self.no_of_nfts_staked >= MAX_NFTS_ALLOWED as u64 {
             return Err(error!(ErrorCode::NotEnoughSpaceForStakedMint));
         }
-        let default_staked_mint: Pubkey = Pubkey::default();
+        // let default_staked_mint: Pubkey = Pubkey::default();
 
         for i in 0..MAX_NFTS_ALLOWED{
             if self.farmer_staked_mints[i] == default_staked_mint && 
-                self.farmer_staked_mints[i] != farmer_staked_mint &&
+               self.farmer_staked_mints[i] != farmer_staked_mint && 
                 farmer_staked_mint!= default_staked_mint
             {
                 self.farmer_staked_mints[i] = farmer_staked_mint;
@@ -39,12 +42,12 @@ impl FarmerStakedMints {
         if self.no_of_nfts_staked >= MAX_NFTS_ALLOWED as u64 {
             return Err(error!(ErrorCode::NotEnoughSpaceForStakedMint));
         }
-        let default_staked_mint: Pubkey = Pubkey::default();
+        // let default_staked_mint: Pubkey = Pubkey::new_from_array([0; 32]);
         for i in 0..MAX_NFTS_ALLOWED{
             if self.farmer_staked_mints[i] == farmer_staked_mint && 
                 farmer_staked_mint!= default_staked_mint
             {
-                self.farmer_staked_mints[i] = default_staked_mint;
+                self.farmer_staked_mints[i] = Pubkey::new_from_array([0; 32]);
                 self.no_of_nfts_staked.try_sub(1)?;
                 
             }
