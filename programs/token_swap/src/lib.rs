@@ -7,7 +7,7 @@ pub mod error;
 pub use instructions::*;
 pub use state::*;
 
-declare_id!("9BUQq8TPQurLVvynAbiVDtMGPK8DYtxEwhdh3HHQe69v");
+declare_id!("2PrbTwpNBDNDrZQBWtxmGcuSnxZzRxE1ECfL9EEMVxkG");
 
 #[program]
 pub mod token_swap {

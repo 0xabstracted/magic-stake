@@ -1,17 +1,14 @@
 [features]
 seeds = false
-[programs.devnet]
-gem_bank = "AjkkPAMBzpJ1M4yGPjdLomRSZkQHUgL9YNp9ksfKebGm"
-magic_stake = "45eAzw1V8BPznoTejeqtMvNP6suKDn9NWs4t5gRyK9TM"
-raffles = "2V1dePsJEHuEmSJCktyAXf8APguucdFx5k6YKMAMiNH2"
-token_swap = "9BUQq8TPQurLVvynAbiVDtMGPK8DYtxEwhdh3HHQe69v"
+[programs.mainnet]
+token_swap = "2PrbTwpNBDNDrZQBWtxmGcuSnxZzRxE1ECfL9EEMVxkG"
 
 [registry]
 url = "https://anchor.projectserum.com"
 
 [provider]
-cluster = "https://metaplex.devnet.rpcpool.com/"
-wallet = "/Users/bhargavveepuri/wallets/solana/solana-wallet_linux/TnCyU9sKGpStvmPkGDMxfSSyjTnE7Ad6eNDcUdGyxoq.json"
+cluster = "https://api.mainnet-beta.solana.com"
+wallet = "/Users/bhargavveepuri/wallets/solana/solana-wallet_linux/ryaNsMVq6FaS4oYT6gXxKsPEzGqryWmMb2PQKABsSRX.json"
 
 [scripts]
 test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"
