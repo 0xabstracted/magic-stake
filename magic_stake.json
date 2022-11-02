@@ -1,0 +1,2418 @@
+{
+  "version": "0.1.0",
+  "name": "magic_stake",
+  "instructions": [
+    {
+      "name": "initFixedFarm",
+      "accounts": [
+        {
+          "name": "farm",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "farmManager",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "farmAuthority",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "rewardAPot",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "rewardAMint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "farmTreasuryToken",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "bank",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "gemBank",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "bumpAuth",
+          "type": "u8"
+        },
+        {
+          "name": "farmConfig",
+          "type": {
+            "defined": "FarmConfig"
+          }
+        },
+        {
+          "name": "maxCounts",
+          "type": {
+            "option": {
+              "defined": "MaxCounts"
+            }
+          }
+        },
+        {
+          "name": "farmTreasuryToken",
+          "type": "publicKey"
+        }
+      ]
+    },
+    {
+      "name": "initProbableFarm",
+      "accounts": [
+        {
+          "name": "farm",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "farmManager",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "farmAuthority",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "rewardAPot",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "rewardAMint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "farmTreasuryToken",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "bank",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "gemBank",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "bumpAuth",
+          "type": "u8"
+        },
+        {
+          "name": "bumpTreasuryToken",
+          "type": "u8"
+        },
+        {
+          "name": "farmConfig",
+          "type": {
+            "defined": "FarmConfig"
+          }
+        },
+        {
+          "name": "maxCounts",
+          "type": {
+            "option": {
+              "defined": "MaxCounts"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "updateFarm",
+      "accounts": [
+        {
+          "name": "farm",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "farmManager",
+          "isMut": false,
+          "isSigner": true
+        }
+      ],
+      "args": [
+        {
+          "name": "config",
+          "type": {
+            "option": {
+              "defined": "FarmConfig"
+            }
+          }
+        },
+        {
+          "name": "manager",
+          "type": {
+            "option": "publicKey"
+          }
+        },
+        {
+          "name": "maxCounts",
+          "type": {
+            "option": {
+              "defined": "MaxCounts"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "payoutFromTreasury",
+      "accounts": [
+        {
+          "name": "farm",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "farmManager",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "farmAuthority",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "farmTreasuryToken",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "destination",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "bumpAuth",
+          "type": "u8"
+        },
+        {
+          "name": "bumpTreasuryToken",
+          "type": "u8"
+        },
+        {
+          "name": "lamports",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "addToBankWhitelist",
+      "accounts": [
+        {
+          "name": "farm",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "farmManager",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "farmAuthority",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "bank",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "addressToWhitelist",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "whitelistProof",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "gemBank",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "bumpAuth",
+          "type": "u8"
+        },
+        {
+          "name": "whitelistType",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "removeFromBankWhitelist",
+      "accounts": [
+        {
+          "name": "farm",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "farmManager",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "farmAuthority",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "bank",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "addressToRemove",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "whitelistProof",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "gemBank",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "bumpAuth",
+          "type": "u8"
+        },
+        {
+          "name": "bumpWl",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "initFixedFarmer",
+      "accounts": [
+        {
+          "name": "farm",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "farmer",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "farmerStakedMints",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "identity",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "bank",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "gemBank",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "index",
+          "type": "u32"
+        }
+      ]
+    },
+    {
+      "name": "initProbableFarmer",
+      "accounts": [
+        {
+          "name": "farm",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "farmer",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "identity",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "bank",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "gemBank",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "stake",
+      "accounts": [
+        {
+          "name": "farm",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "farmAuthority",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "farmer",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "identity",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "bank",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "vault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "gemBank",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "bumpAuth",
+          "type": "u8"
+        },
+        {
+          "name": "bumpFarmer",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "unstake",
+      "accounts": [
+        {
+          "name": "farm",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "farmAuthority",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "farmTreasuryToken",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "farmer",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "farmerStakedMints",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "identity",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "bank",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "vault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vaultAuthority",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "gemBox",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "gemDepositReceipt",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "gemDestination",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "gemMint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "gemRarity",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "gemBank",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "associatedTokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "bumpAuth",
+          "type": "u8"
+        },
+        {
+          "name": "bumpTreasuryToken",
+          "type": "u8"
+        },
+        {
+          "name": "bumpFarmer",
+          "type": "u8"
+        },
+        {
+          "name": "bumpGemBox",
+          "type": "u8"
+        },
+        {
+          "name": "bumpGdr",
+          "type": "u8"
+        },
+        {
+          "name": "bumpRarity",
+          "type": "u8"
+        },
+        {
+          "name": "amount",
+          "type": "u64"
+        },
+        {
+          "name": "index",
+          "type": "u32"
+        },
+        {
+          "name": "skipRewards",
+          "type": "bool"
+        }
+      ]
+    },
+    {
+      "name": "claim",
+      "accounts": [
+        {
+          "name": "farm",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "farmAuthority",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "farmer",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "identity",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "rewardAPot",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "rewardAMint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rewardADestination",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "associatedTokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "bumpAuth",
+          "type": "u8"
+        },
+        {
+          "name": "bumpFarmer",
+          "type": "u8"
+        },
+        {
+          "name": "bumpPotA",
+          "type": "u8"
+        },
+        {
+          "name": "bumpPotB",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "flashDeposit",
+      "accounts": [
+        {
+          "name": "farm",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "farmAuthority",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "farmer",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "farmerStakedMints",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "identity",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "bank",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "vault",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vaultAuthority",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "gemBox",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "gemDepositReceipt",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "gemSource",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "gemMint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "gemRarity",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "gemBank",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "bumpFarmer",
+          "type": "u8"
+        },
+        {
+          "name": "bumpVaultAuth",
+          "type": "u8"
+        },
+        {
+          "name": "bumpRarity",
+          "type": "u8"
+        },
+        {
+          "name": "index",
+          "type": "u32"
+        },
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "refreshFarmer",
+      "accounts": [
+        {
+          "name": "farm",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "farmer",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "identity",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "bump",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "refreshFarmerSigned",
+      "accounts": [
+        {
+          "name": "farm",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "farmer",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "identity",
+          "isMut": false,
+          "isSigner": true
+        }
+      ],
+      "args": [
+        {
+          "name": "bump",
+          "type": "u8"
+        },
+        {
+          "name": "reenroll",
+          "type": "bool"
+        }
+      ]
+    },
+    {
+      "name": "authorizeFunder",
+      "accounts": [
+        {
+          "name": "farm",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "farmManager",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "funderToAuthorize",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "authorizationProof",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "deauthorizeFunder",
+      "accounts": [
+        {
+          "name": "farm",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "farmManager",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "funderToDeauthorize",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "authorizationProof",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "bump",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "fundReward",
+      "accounts": [
+        {
+          "name": "farm",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authorizationProof",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "authorizedFunder",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "rewardPot",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "rewardSource",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "rewardMint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "bumpProof",
+          "type": "u8"
+        },
+        {
+          "name": "bumpPot",
+          "type": "u8"
+        },
+        {
+          "name": "fixedRateConfig",
+          "type": {
+            "option": {
+              "defined": "FixedRateConfig"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "cancelReward",
+      "accounts": [
+        {
+          "name": "farm",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "farmManager",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "farmAuthority",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rewardPot",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "rewardDestination",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "rewardMint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "receiver",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "associatedTokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "bumpAuth",
+          "type": "u8"
+        },
+        {
+          "name": "bumpPot",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "lockReward",
+      "accounts": [
+        {
+          "name": "farm",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "farmManager",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "rewardMint",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "addRaritiesToBank",
+      "accounts": [
+        {
+          "name": "farm",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "farmManager",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "farmAuthority",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "bank",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "gemBank",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "bumpAuth",
+          "type": "u8"
+        },
+        {
+          "name": "rarityConfigs",
+          "type": {
+            "vec": {
+              "defined": "RarityConfig"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "createAlphaTokenswap",
+      "accounts": [
+        {
+          "name": "alphaTokenswap",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "alphaCreator",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "alphaPot",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "alphaOwnerSource",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "alphaMint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "transferAlphaTokens",
+      "accounts": [
+        {
+          "name": "alphaTokenswap",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "alphaCreator",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "alphaPot",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "alphaMint",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "userTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "user",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "bumpAlphaTokenswap",
+          "type": "u8"
+        },
+        {
+          "name": "bumpAlphaPot",
+          "type": "u8"
+        },
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "initState",
+      "accounts": [
+        {
+          "name": "state",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "payer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "vrf",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": "InitStateParams"
+          }
+        }
+      ]
+    },
+    {
+      "name": "updateResult",
+      "accounts": [
+        {
+          "name": "state",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "vrf",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "requestResult",
+      "accounts": [
+        {
+          "name": "state",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "authority",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "switchboardProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "vrf",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "oracleQueue",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "queueAuthority",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "dataBuffer",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "permission",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "escrow",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "payerWallet",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "payerAuthority",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "recentBlockhashes",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "programState",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": "RequestResultParams"
+          }
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "AlphaTokenswap",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "alphaCreator",
+            "type": "publicKey"
+          },
+          {
+            "name": "alphaMint",
+            "type": "publicKey"
+          },
+          {
+            "name": "alphaPot",
+            "type": "publicKey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "AuthorizationProof",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authorizedFunder",
+            "type": "publicKey"
+          },
+          {
+            "name": "farm",
+            "type": "publicKey"
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Farm",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "version",
+            "type": "u16"
+          },
+          {
+            "name": "farmManager",
+            "type": "publicKey"
+          },
+          {
+            "name": "farmTreasuryToken",
+            "type": "publicKey"
+          },
+          {
+            "name": "farmAuthority",
+            "type": "publicKey"
+          },
+          {
+            "name": "farmAuthoritySeed",
+            "type": "publicKey"
+          },
+          {
+            "name": "farmAuthorityBumpSeed",
+            "type": {
+              "array": [
+                "u8",
+                1
+              ]
+            }
+          },
+          {
+            "name": "bank",
+            "type": "publicKey"
+          },
+          {
+            "name": "config",
+            "type": {
+              "defined": "FarmConfig"
+            }
+          },
+          {
+            "name": "farmerCount",
+            "type": "u64"
+          },
+          {
+            "name": "stakedFarmerCount",
+            "type": "u64"
+          },
+          {
+            "name": "gemsStaked",
+            "type": "u64"
+          },
+          {
+            "name": "rarityPointsStaked",
+            "type": "u64"
+          },
+          {
+            "name": "authorizedFunderCount",
+            "type": "u64"
+          },
+          {
+            "name": "rewardA",
+            "type": {
+              "defined": "FarmReward"
+            }
+          },
+          {
+            "name": "maxCounts",
+            "type": {
+              "defined": "MaxCounts"
+            }
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "reserved2",
+            "type": {
+              "array": [
+                "u8",
+                16
+              ]
+            }
+          },
+          {
+            "name": "reserved3",
+            "type": {
+              "array": [
+                "u8",
+                4
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Farmer",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "farm",
+            "type": "publicKey"
+          },
+          {
+            "name": "identity",
+            "type": "publicKey"
+          },
+          {
+            "name": "vault",
+            "type": "publicKey"
+          },
+          {
+            "name": "state",
+            "type": {
+              "defined": "FarmerState"
+            }
+          },
+          {
+            "name": "gemsStaked",
+            "type": "u64"
+          },
+          {
+            "name": "rarityPointsStaked",
+            "type": "u64"
+          },
+          {
+            "name": "minStakingEndTs",
+            "type": "u64"
+          },
+          {
+            "name": "cooldownEndTs",
+            "type": "u64"
+          },
+          {
+            "name": "rewardA",
+            "type": {
+              "defined": "FarmerReward"
+            }
+          },
+          {
+            "name": "noFsmAccounts",
+            "type": "u64"
+          },
+          {
+            "name": "fsmAccountKeys",
+            "type": {
+              "array": [
+                "publicKey",
+                21
+              ]
+            }
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "FarmerStakedMints",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "farmer",
+            "type": "publicKey"
+          },
+          {
+            "name": "index",
+            "type": "u32"
+          },
+          {
+            "name": "noOfNftsStaked",
+            "type": "u64"
+          },
+          {
+            "name": "farmerStakedMints",
+            "type": {
+              "array": [
+                "publicKey",
+                200
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "VrfClient",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "maxResult",
+            "type": "u64"
+          },
+          {
+            "name": "resultBuffer",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "result",
+            "type": "u128"
+          },
+          {
+            "name": "lastTimestamp",
+            "type": "i64"
+          },
+          {
+            "name": "authority",
+            "type": "publicKey"
+          },
+          {
+            "name": "vrf",
+            "type": "publicKey"
+          }
+        ]
+      }
+    }
+  ],
+  "types": [
+    {
+      "name": "InitStateParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "maxResult",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "RequestResultParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "permissionBump",
+            "type": "u8"
+          },
+          {
+            "name": "switchboardStateBump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "RarityConfig",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "mint",
+            "type": "publicKey"
+          },
+          {
+            "name": "rarityPoints",
+            "type": "u16"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Number128",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "n",
+            "type": "u128"
+          }
+        ]
+      }
+    },
+    {
+      "name": "FarmConfig",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "minStakingPeriodSec",
+            "type": "u64"
+          },
+          {
+            "name": "cooldownPeriodSec",
+            "type": "u64"
+          },
+          {
+            "name": "unstakingFeePercent",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "FarmReward",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "rewardMint",
+            "type": "publicKey"
+          },
+          {
+            "name": "rewardPot",
+            "type": "publicKey"
+          },
+          {
+            "name": "rewardType",
+            "type": {
+              "defined": "RewardType"
+            }
+          },
+          {
+            "name": "fixedRateReward",
+            "type": {
+              "defined": "FixedRateReward"
+            }
+          },
+          {
+            "name": "probableRateReward",
+            "type": {
+              "defined": "ProbableRateReward"
+            }
+          },
+          {
+            "name": "funds",
+            "type": {
+              "defined": "FundsTracker"
+            }
+          },
+          {
+            "name": "times",
+            "type": {
+              "defined": "TimeTracker"
+            }
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "FundsTracker",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "totalFunded",
+            "type": "u64"
+          },
+          {
+            "name": "totalRefunded",
+            "type": "u64"
+          },
+          {
+            "name": "totalAccuredToStakers",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "MaxCounts",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "maxFarmers",
+            "type": "u32"
+          },
+          {
+            "name": "maxGems",
+            "type": "u32"
+          },
+          {
+            "name": "maxRarityPoints",
+            "type": "u32"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TimeTracker",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "durationSec",
+            "type": "u64"
+          },
+          {
+            "name": "rewardEndTs",
+            "type": "u64"
+          },
+          {
+            "name": "lockEndTs",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "FarmerFixedRateReward",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "beginStakingTs",
+            "type": "u64"
+          },
+          {
+            "name": "beginScheduleTs",
+            "type": "u64"
+          },
+          {
+            "name": "lastUpdatedTs",
+            "type": "u64"
+          },
+          {
+            "name": "promisedSchedule",
+            "type": {
+              "defined": "FixedRateSchedule"
+            }
+          },
+          {
+            "name": "promisedDuration",
+            "type": "u64"
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                "u8",
+                16
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "FarmerProbableRateReward",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "beginProbableStakingTs",
+            "type": "u64"
+          },
+          {
+            "name": "beginProbableScheduleTs",
+            "type": "u64"
+          },
+          {
+            "name": "probableLastUpdatedTs",
+            "type": "u64"
+          },
+          {
+            "name": "promisedProbableSchedule",
+            "type": {
+              "defined": "ProbableRateSchedule"
+            }
+          },
+          {
+            "name": "promisedProbableDuration",
+            "type": "u64"
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                "u8",
+                16
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "FarmerReward",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "paidOutReward",
+            "type": "u64"
+          },
+          {
+            "name": "accruedReward",
+            "type": "u64"
+          },
+          {
+            "name": "fixedRate",
+            "type": {
+              "defined": "FarmerFixedRateReward"
+            }
+          },
+          {
+            "name": "probableRate",
+            "type": {
+              "defined": "FarmerProbableRateReward"
+            }
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "FarmerVariableRateReward",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "lastRecordedAccruedRewardPerRairtyPoint",
+            "type": {
+              "defined": "Number128"
+            }
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                "u8",
+                16
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "FixedRateConfig",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "schedule",
+            "type": {
+              "defined": "FixedRateSchedule"
+            }
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "durationSec",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "FixedRateReward",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "schedule",
+            "type": {
+              "defined": "FixedRateSchedule"
+            }
+          },
+          {
+            "name": "reservedAmount",
+            "type": "u64"
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "FixedRateSchedule",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "baseRate",
+            "type": "u64"
+          },
+          {
+            "name": "tier1",
+            "type": {
+              "option": {
+                "defined": "TierConfig"
+              }
+            }
+          },
+          {
+            "name": "tier2",
+            "type": {
+              "option": {
+                "defined": "TierConfig"
+              }
+            }
+          },
+          {
+            "name": "tier3",
+            "type": {
+              "option": {
+                "defined": "TierConfig"
+              }
+            }
+          },
+          {
+            "name": "denominator",
+            "type": "u64"
+          },
+          {
+            "name": "numberOfNfts",
+            "type": "u64"
+          },
+          {
+            "name": "extraReward",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TierConfig",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "rewardRate",
+            "type": "u64"
+          },
+          {
+            "name": "requiredTenure",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ProbableRateConfig",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "probableSchedule",
+            "type": {
+              "defined": "ProbableRateSchedule"
+            }
+          },
+          {
+            "name": "probableAmount",
+            "type": "u64"
+          },
+          {
+            "name": "probableDurationSec",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ProbableRateReward",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "probableSchedule",
+            "type": {
+              "defined": "ProbableRateSchedule"
+            }
+          },
+          {
+            "name": "reservedAmount",
+            "type": "u64"
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "ProbableRateSchedule",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "prob1",
+            "type": {
+              "defined": "ProbableTierConfig"
+            }
+          },
+          {
+            "name": "prob2",
+            "type": {
+              "option": {
+                "defined": "ProbableTierConfig"
+              }
+            }
+          },
+          {
+            "name": "prob3",
+            "type": {
+              "option": {
+                "defined": "ProbableTierConfig"
+              }
+            }
+          },
+          {
+            "name": "prob4",
+            "type": {
+              "option": {
+                "defined": "ProbableTierConfig"
+              }
+            }
+          },
+          {
+            "name": "prob5",
+            "type": {
+              "option": {
+                "defined": "ProbableTierConfig"
+              }
+            }
+          },
+          {
+            "name": "denominator",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ProbableTierConfig",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "probableRewardRate",
+            "type": "u64"
+          },
+          {
+            "name": "probability",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "LPType",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Respect"
+          }
+        ]
+      }
+    },
+    {
+      "name": "RewardType",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Fixed"
+          },
+          {
+            "name": "Probable"
+          }
+        ]
+      }
+    },
+    {
+      "name": "FarmerState",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Unstaked"
+          },
+          {
+            "name": "Staked"
+          },
+          {
+            "name": "PendingCooldown"
+          }
+        ]
+      }
+    },
+    {
+      "name": "FixedRateRewardTier",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Base"
+          },
+          {
+            "name": "Tier1"
+          },
+          {
+            "name": "Tier2"
+          },
+          {
+            "name": "Tier3"
+          }
+        ]
+      }
+    }
+  ],
+  "events": [
+    {
+      "name": "RequestingRandomness",
+      "fields": [
+        {
+          "name": "vrfClient",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "maxResult",
+          "type": "u64",
+          "index": false
+        },
+        {
+          "name": "timestamp",
+          "type": "i64",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "VrfClientInvoked",
+      "fields": [
+        {
+          "name": "vrfClient",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "timestamp",
+          "type": "i64",
+          "index": false
+        }
+      ]
+    },
+    {
+      "name": "VrfClientResultUpdated",
+      "fields": [
+        {
+          "name": "vrfClient",
+          "type": "publicKey",
+          "index": false
+        },
+        {
+          "name": "result",
+          "type": "u128",
+          "index": false
+        },
+        {
+          "name": "resultBuffer",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          },
+          "index": false
+        },
+        {
+          "name": "timestamp",
+          "type": "i64",
+          "index": false
+        }
+      ]
+    }
+  ],
+  "metadata": {
+    "address": "45eAzw1V8BPznoTejeqtMvNP6suKDn9NWs4t5gRyK9TM"
+  }
+}
